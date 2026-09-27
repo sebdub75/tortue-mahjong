@@ -1,0 +1,13 @@
+# Mahjong solitaire Android
+
+Jeu de Mahjong solitaire à un joueur, façon *Mahjong HD* : pyramide « tortue » de 144
+tuiles sur 5 niveaux, on retire des paires de tuiles identiques et libres. Ce n'est pas
+un Mahjong à plusieurs joueurs.
+
+- Objectif et règles : [README.md](README.md)
+- Décisions d'architecture : `docs/decisions/` (une fiche numérotée par décision ; en
+  ajouter une pour chaque choix structurant)
+- Technologie : Kotlin + Jetpack Compose, règles dans un module `:core` en Kotlin pur
+  testé avec JUnit (voir [0001](docs/decisions/0001-choix-kotlin-compose.md))
+
+Documentation rédigée en français.

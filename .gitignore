@@ -1,0 +1,17 @@
+# Fichiers-masques créés par le bac à sable de Claude Code (fichiers spéciaux vides)
+/.bash_profile
+/.bashrc
+/.gitconfig
+/.gitmodules
+/.mcp.json
+/.profile
+/.ripgreprc
+/.zprofile
+/.zshrc
+
+# Configuration locale de Claude Code
+/.claude/
+
+# IDE
+/.idea
+/.vscode
