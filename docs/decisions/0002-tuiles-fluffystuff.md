@@ -23,9 +23,12 @@ variante `Regular`.
 
 ## Conséquences
 
-- **Fleurs et saisons à dessiner** : le jeu est fait pour le Riichi japonais et ne
-  contient ni fleurs ni saisons. Il faut produire 8 symboles dans le même style (trait,
-  palette, épaisseur) pour atteindre les 42 motifs.
+- **Fleurs et saisons à produire** : le jeu est fait pour le Riichi japonais et ne
+  contient ni fleurs ni saisons. Les 8 symboles manquants reprennent le modèle des
+  tuiles d'honneur : un grand caractère au pinceau (梅 蘭 菊 竹 en rouge, 春 夏 秋 冬 en
+  vert) et un numéro en noir dans le coin. Ils sont générés depuis la police libre
+  Yuji Boku (OFL) avec la palette FluffyStuff. Détails et régénération :
+  [art/tiles/README.md](../../art/tiles/README.md).
 - **Rendu** : les symboles sont convertis en *VectorDrawable* Android. Le corps de la
   tuile (face, épaisseur, ombre selon le niveau, surbrillance des tuiles libres) est
   dessiné par le code dans le `Canvas` Compose, puis le symbole est posé par-dessus. Les

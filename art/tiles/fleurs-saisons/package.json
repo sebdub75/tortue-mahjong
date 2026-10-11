@@ -1,0 +1,8 @@
+{
+  "name": "mahjong-fleurs-saisons",
+  "private": true,
+  "description": "Génération des symboles fleurs et saisons à partir de la police Yuji Boku",
+  "dependencies": {
+    "opentype.js": "1.3.4"
+  }
+}

@@ -9,7 +9,7 @@ un Mahjong à plusieurs joueurs.
   ajouter une pour chaque choix structurant)
 - Technologie : Kotlin + Jetpack Compose, règles dans un module `:core` en Kotlin pur
   testé avec JUnit (voir [0001](docs/decisions/0001-choix-kotlin-compose.md))
-- Tuiles : jeu SVG FluffyStuff (CC0), fleurs et saisons à dessiner dans le même style
-  (voir [0002](docs/decisions/0002-tuiles-fluffystuff.md))
+- Tuiles : jeu SVG FluffyStuff (CC0), fleurs et saisons générées dans le même style ;
+  sources dans `art/tiles/` (voir [0002](docs/decisions/0002-tuiles-fluffystuff.md))
 
 Documentation rédigée en français.
