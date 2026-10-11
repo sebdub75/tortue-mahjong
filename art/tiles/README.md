@@ -45,3 +45,29 @@ node generer.js YujiBoku-Regular.ttf .
 ```
 
 La police (8 Mo) et `node_modules/` ne sont pas versionnés.
+
+## `drawable/` — VectorDrawable Android
+
+Les 42 symboles convertis par `convertir.js`, nommés `tile_<nom>.xml` en minuscules
+(`tile_man1.xml`, `tile_ton.xml`, `tile_flower1.xml`…). Ils passeront dans
+`app/src/main/res/drawable/` quand le module `:app` existera. `tile_haku.xml` est un
+vecteur vide : le dragon blanc n'a pas de symbole.
+
+```sh
+cd art/tiles
+npm install
+node convertir.js
+```
+
+Le convertisseur `svg2vectordrawable` seul perd une partie du dessin des fichiers
+Inkscape : couleurs écrites en `style="…"`, clones `<use>` enchaînés, transformations
+imbriquées, traits pointillés (inconnus de VectorDrawable). `convertir.js` aplatit donc
+d'abord chaque SVG en une liste de tracés simples, en coordonnées finales, styles
+résolus, pointillés découpés en segments. La face et le dos ne sont pas convertis
+(filtres et masques) : le corps de la tuile est dessiné en Compose.
+
+**Vérification faite le 2026-10-11** : chaque VectorDrawable a été reconverti en SVG,
+puis son rendu dans Firefox a été comparé pixel à pixel à celui de l'original. 20 tuiles
+sur 42 sont identiques ; pour les autres, l'écart reste sous 9 % des pixels dessinés et
+se limite au lissage des bords et à la position des tirets des ronds. Ce contrôle ne
+remplace pas un affichage réel sur Android, à faire avec le module `:app`.

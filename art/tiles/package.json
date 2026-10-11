@@ -1,0 +1,11 @@
+{
+  "name": "mahjong-tuiles-conversion",
+  "private": true,
+  "description": "Conversion des symboles SVG des tuiles en VectorDrawable Android",
+  "dependencies": {
+    "@xmldom/xmldom": "0.9.12",
+    "svg-path-properties": "2.1.0",
+    "svg2vectordrawable": "2.9.1",
+    "svgpath": "2.6.0"
+  }
+}
