@@ -23,7 +23,9 @@ Détail et alternatives écartées : [docs/decisions/0001-choix-kotlin-compose.m
 
 Maquette de rendu : le module `:app` affiche une petite pyramide de 21 tuiles en relief
 (tranche, ombre portée, empilement sur 4 niveaux) ; toucher une tuile la sélectionne.
-Pas encore de règles du jeu (module `:core` à venir).
+Le module `:core` contient les faces et leur appariement, la disposition « tortue » et
+la règle de la tuile libre, testés avec JUnit (`./gradlew :core:test`). Il n'est pas
+encore branché sur l'affichage. L'application est en paysage.
 
 Lancer la démo : `./demo.sh` construit l'application, démarre l'émulateur `Pixel_8` (ou
 celui passé en argument) si aucun appareil n'est branché, puis installe et lance l'app.

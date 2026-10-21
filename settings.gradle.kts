@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Mahjong"
 include(":app")
+include(":core")
