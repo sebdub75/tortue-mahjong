@@ -21,11 +21,19 @@ Détail et alternatives écartées : [docs/decisions/0001-choix-kotlin-compose.m
 
 ## État
 
-Maquette de rendu : le module `:app` affiche une petite pyramide de 21 tuiles en relief
-(tranche, ombre portée, empilement sur 4 niveaux) ; toucher une tuile la sélectionne.
-Le module `:core` contient les faces et leur appariement, la disposition « tortue » et
-la règle de la tuile libre et la distribution de donnes toujours solubles, testés avec JUnit (`./gradlew :core:test`). Il n'est pas
-encore branché sur l'affichage. L'application est en paysage.
+Première version jouable : une donne de tortue, toujours soluble, en paysage. On
+touche deux tuiles libres qui s'apparient pour les retirer ; les tuiles bloquées sont
+assombries. Compteurs de tuiles et de paires jouables, bouton « Nouvelle donne »,
+message en fin de partie. Pas encore d'indice, d'annulation, de mélange ni de
+sauvegarde.
+
+Les règles sont dans le module `:core`, testé avec JUnit (`./gradlew :core:test`).
 
 Lancer la démo : `./demo.sh` construit l'application, démarre l'émulateur `Pixel_8` (ou
 celui passé en argument) si aucun appareil n'est branché, puis installe et lance l'app.
+
+APK pour un téléphone : `./apk.sh` produit `dist/mahjong-<version>.apk`, en version
+release signée. Au premier lancement, la clé est créée dans
+`~/.android/mahjong-release.jks`, avec un mot de passe aléatoire dans
+`~/.android/mahjong-release.pass` (lisibles par vous seul). Sauvegarder ces deux
+fichiers : sans eux, une nouvelle version ne s'installe plus par-dessus l'ancienne.
