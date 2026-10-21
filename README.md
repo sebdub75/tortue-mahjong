@@ -21,4 +21,9 @@ Détail et alternatives écartées : [docs/decisions/0001-choix-kotlin-compose.m
 
 ## État
 
-Projet en phase de cadrage : aucun code pour l'instant.
+Maquette de rendu : le module `:app` affiche une petite pyramide de 21 tuiles en relief
+(tranche, ombre portée, empilement sur 4 niveaux) ; toucher une tuile la sélectionne.
+Pas encore de règles du jeu (module `:core` à venir).
+
+Lancer la démo : `./demo.sh` construit l'application, démarre l'émulateur `Pixel_8` (ou
+celui passé en argument) si aucun appareil n'est branché, puis installe et lance l'app.

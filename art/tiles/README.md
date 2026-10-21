@@ -49,8 +49,8 @@ La police (8 Mo) et `node_modules/` ne sont pas versionnés.
 ## `drawable/` — VectorDrawable Android
 
 Les 42 symboles convertis par `convertir.js`, nommés `tile_<nom>.xml` en minuscules
-(`tile_man1.xml`, `tile_ton.xml`, `tile_flower1.xml`…). Ils passeront dans
-`app/src/main/res/drawable/` quand le module `:app` existera. `tile_haku.xml` est un
+(`tile_man1.xml`, `tile_ton.xml`, `tile_flower1.xml`…). Ils sont copiés dans
+`app/src/main/res/drawable/` : recopier après chaque régénération. `tile_haku.xml` est un
 vecteur vide : le dragon blanc n'a pas de symbole.
 
 ```sh
