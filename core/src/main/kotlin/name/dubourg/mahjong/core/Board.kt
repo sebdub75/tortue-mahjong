@@ -12,19 +12,8 @@ data class Position(val x: Int, val y: Int, val z: Int)
 /** État du plateau : les tuiles encore en place. Immuable. */
 class Board(val tiles: Map<Position, Face>) {
 
-    /**
-     * Une tuile est libre si rien n'est posé dessus, même en partie, et si son côté
-     * gauche ou son côté droit est dégagé au même niveau.
-     */
-    fun isFree(p: Position): Boolean {
-        if (p !in tiles) return false
-        val covered = tiles.keys.any { it.z == p.z + 1 && overlaps(it, p) }
-        if (covered) return false
-        val sameRow = tiles.keys.filter { it.z == p.z && abs(it.y - p.y) < 2 }
-        val leftBlocked = sameRow.any { it.x == p.x - 2 }
-        val rightBlocked = sameRow.any { it.x == p.x + 2 }
-        return !leftBlocked || !rightBlocked
-    }
+    /** Voir [isFreeAmong] ; une position vide n'est pas libre. */
+    fun isFree(p: Position): Boolean = p in tiles && isFreeAmong(p, tiles.keys)
 
     /** Vrai si [a] et [b] sont deux tuiles distinctes, libres et qui s'apparient. */
     fun canRemove(a: Position, b: Position): Boolean {
@@ -49,6 +38,18 @@ class Board(val tiles: Map<Position, Face>) {
                 .map { j -> free[i] to free[j] }
         }
     }
+}
 
-    private fun overlaps(a: Position, b: Position) = abs(a.x - b.x) < 2 && abs(a.y - b.y) < 2
+/**
+ * Règle de la tuile libre, sur les seules positions occupées [occupied] : rien n'est
+ * posé sur [p], même en partie, et son côté gauche ou son côté droit est dégagé au
+ * même niveau. Une voisine décalée d'une demi-tuile en hauteur compte comme voisine.
+ */
+internal fun isFreeAmong(p: Position, occupied: Collection<Position>): Boolean {
+    val covered = occupied.any { it.z == p.z + 1 && abs(it.x - p.x) < 2 && abs(it.y - p.y) < 2 }
+    if (covered) return false
+    val sameRow = occupied.filter { it.z == p.z && abs(it.y - p.y) < 2 }
+    val leftBlocked = sameRow.any { it.x == p.x - 2 }
+    val rightBlocked = sameRow.any { it.x == p.x + 2 }
+    return !leftBlocked || !rightBlocked
 }

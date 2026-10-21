@@ -14,7 +14,7 @@ un Mahjong à plusieurs joueurs.
 - Rendu : fausse 3D en perspective cavalière dans le `Canvas`, `app/.../TileRenderer.kt`
   (voir [0003](docs/decisions/0003-rendu-tuiles-en-relief.md)) ; démo : `./demo.sh`
 - Application en paysage (voir [0004](docs/decisions/0004-orientation-paysage.md))
-- Règles : `core/` (`Face`, `Board`, `Layouts`), coordonnées en demi-tuiles ;
+- Règles : `core/` (`Face`, `Board`, `Layouts`, `Dealer`), coordonnées en demi-tuiles ;
   tests : `./gradlew :core:test`
 
 Documentation rédigée en français.
