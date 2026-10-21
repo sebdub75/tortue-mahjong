@@ -11,5 +11,7 @@ un Mahjong à plusieurs joueurs.
   testé avec JUnit (voir [0001](docs/decisions/0001-choix-kotlin-compose.md))
 - Tuiles : jeu SVG FluffyStuff (CC0), fleurs et saisons générées dans le même style ;
   sources dans `art/tiles/` (voir [0002](docs/decisions/0002-tuiles-fluffystuff.md))
+- Rendu : fausse 3D en perspective cavalière dans le `Canvas`, `app/.../TileRenderer.kt`
+  (voir [0003](docs/decisions/0003-rendu-tuiles-en-relief.md)) ; démo : `./demo.sh`
 
 Documentation rédigée en français.
