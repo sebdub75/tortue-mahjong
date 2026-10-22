@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,10 +31,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.unit.sp
 import name.dubourg.mahjong.core.Board
 import name.dubourg.mahjong.core.Dealer
@@ -47,11 +54,11 @@ import kotlin.random.Random
 /** Ordre de dessin : niveau par niveau, de droite à gauche puis de haut en bas. */
 private val drawOrder = compareBy<Position> { it.z }.thenByDescending { it.x }.thenBy { it.y }
 
-private val TextColor = Color(0xFFF1ECE2)
-private val ButtonColor = Color(0x33FFFFFF)
+internal val TextColor = Color(0xFFF1ECE2)
+internal val ButtonColor = Color(0x33FFFFFF)
 
-/** Partie en cours, avec son historique, et la tuile sélectionnée. */
-private class GameState(board: Board) {
+/** Partie en cours, distribuée en mode difficile ou non, avec son historique et la tuile sélectionnée. */
+private class GameState(board: Board, val hard: Boolean) {
     private var game by mutableStateOf(Game(board))
     var selected by mutableStateOf<Position?>(null)
 
@@ -80,7 +87,14 @@ private class GameState(board: Board) {
     }
 }
 
-private fun newGame() = GameState(Dealer.deal(Layouts.TURTLE, Random.Default).board)
+/** Nouvelle donne : soluble, ou tirée au hasard en mode difficile. */
+private fun newGame(hard: Boolean) = GameState(
+    if (hard) Dealer.dealRandom(Layouts.TURTLE, Random.Default)
+    else Dealer.deal(Layouts.TURTLE, Random.Default).board,
+    hard,
+)
+
+private fun modeName(hard: Boolean) = if (hard) "difficile" else "normal"
 
 /** Taille des tuiles et position du plateau, pour qu'il tienne centré dans [canvas]. */
 private class BoardLayout(positions: Collection<Position>, canvas: Size) {
@@ -88,14 +102,15 @@ private class BoardLayout(positions: Collection<Position>, canvas: Size) {
     val origin: Offset
 
     init {
-        // Encombrement calculé pour une tuile de largeur 1, ombre comprise.
+        // Encombrement calculé pour une tuile de largeur 1 : ombre comprise à gauche, où
+        // elle côtoie les commandes ; en bas, seule la tranche compte et l'ombre peut passer
+        // sous le bord de l'écran, sans marge supplémentaire.
         val unit = TileMetrics(1f)
         val rects = positions.map { unit.faceRect(it.x, it.y, it.z) }
-        val margin = unit.thickness * 2.5f
-        val left = rects.minOf { it.left } - margin
+        val left = rects.minOf { it.left } - unit.thickness * 2.5f
         val right = rects.maxOf { it.right }
         val top = rects.minOf { it.top }
-        val bottom = rects.maxOf { it.bottom } + margin
+        val bottom = rects.maxOf { it.bottom } + unit.thickness
         val scale = 0.97f * min(canvas.width / (right - left), canvas.height / (bottom - top))
         metrics = TileMetrics(scale)
         origin = Offset(
@@ -105,11 +120,28 @@ private class BoardLayout(positions: Collection<Position>, canvas: Size) {
     }
 
     fun faceRect(p: Position) = metrics.faceRect(p.x, p.y, p.z).translate(origin)
+
+    /** Bas visible de la rangée la plus basse : la face, plus l'épaisseur de la tuile. */
+    fun bottom(positions: Collection<Position>) = positions.maxOf { faceRect(it).bottom } + metrics.thickness
 }
 
 @Composable
 fun GameScreen() {
-    var game by remember { mutableStateOf(newGame()) }
+    val context = LocalContext.current
+    val settings = remember { Settings(context.applicationContext) }
+    // Changer de mode ne touche pas la partie en cours : à la sortie des options, on
+    // propose une nouvelle donne ; si le joueur la refuse, le mode vaut pour la suivante.
+    var game by remember { mutableStateOf(newGame(settings.hard)) }
+    var showOptions by remember { mutableStateOf(false) }
+    var offerNewDeal by remember { mutableStateOf(false) }
+    var boardSize by remember { mutableStateOf(Size.Zero) }
+    // Marge sous les commandes pour aligner le bas du dernier bouton sur la rangée la plus
+    // basse de la tortue (plateau et colonne partagent le même haut).
+    val bottomGap = with(LocalDensity.current) {
+        if (boardSize == Size.Zero) 12.dp
+        else (boardSize.height - BoardLayout(Layouts.TURTLE.positions, boardSize)
+            .bottom(Layouts.TURTLE.positions)).toDp().coerceAtLeast(0.dp)
+    }
     val board = game.board
     val pairs = board.playablePairs().size
 
@@ -121,15 +153,19 @@ fun GameScreen() {
         Row(Modifier.fillMaxSize().safeDrawingPadding()) {
             // Le plateau est limité par la hauteur : les commandes prennent place à gauche.
             Column(
-                Modifier.fillMaxHeight().width(150.dp).padding(12.dp),
+                Modifier.fillMaxHeight().width(150.dp)
+                    .padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = bottomGap),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Label("Tuiles\n${board.tiles.size}")
                 Label("Paires jouables\n$pairs")
-                ActionButton("Nouvelle donne") { game = newGame() }
+                Label("Mode\n${modeName(game.hard).replaceFirstChar { it.uppercase() }}")
+                ActionButton("Nouvelle donne") { game = newGame(settings.hard) }
                 ActionButton("Annuler", enabled = game.canUndo) { game.undo() }
+                Spacer(Modifier.weight(1f))
+                ActionButton("Options") { showOptions = true }
             }
-            BoardCanvas(game, Modifier.fillMaxSize())
+            BoardCanvas(game, Modifier.fillMaxSize().onSizeChanged { boardSize = it.toSize() })
         }
 
         val message = when {
@@ -150,7 +186,28 @@ fun GameScreen() {
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     // Bloqué : revenir en arrière vaut souvent mieux que tout recommencer.
                     if (board.tiles.isNotEmpty()) ActionButton("Annuler") { game.undo() }
-                    ActionButton("Nouvelle donne") { game = newGame() }
+                    ActionButton("Nouvelle donne") { game = newGame(settings.hard) }
+                }
+            }
+        }
+
+        if (showOptions) OptionsPanel(settings) {
+            showOptions = false
+            offerNewDeal = settings.hard != game.hard
+        }
+
+        if (offerNewDeal) {
+            ModalPanel(onDismiss = { offerNewDeal = false }) {
+                BasicText(
+                    "Vous êtes passé en mode ${modeName(settings.hard)}.\nSouhaitez-vous une nouvelle donne ?",
+                    style = TextStyle(TextColor, 22.sp, FontWeight.Bold, textAlign = TextAlign.Center),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    ActionButton("Continuer la partie") { offerNewDeal = false }
+                    ActionButton("Nouvelle donne") {
+                        game = newGame(settings.hard)
+                        offerNewDeal = false
+                    }
                 }
             }
         }
@@ -203,7 +260,7 @@ private fun Label(text: String) {
 }
 
 @Composable
-private fun ActionButton(text: String, enabled: Boolean = true, onClick: () -> Unit) {
+internal fun ActionButton(text: String, enabled: Boolean = true, onClick: () -> Unit) {
     BasicText(
         text,
         Modifier

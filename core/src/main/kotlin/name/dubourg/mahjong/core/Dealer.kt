@@ -6,7 +6,7 @@ import kotlin.random.Random
 class Deal(val board: Board, val solution: List<Pair<Position, Position>>)
 
 /**
- * Distribue des donnes toujours solubles.
+ * Distribue les donnes : toujours solubles avec [deal], au hasard avec [dealRandom].
  *
  * On simule d'abord une partie sur la disposition seule, sans les faces : à chaque tour,
  * deux positions libres tirées au hasard sont retirées. Si l'on se retrouve avec moins de
@@ -19,8 +19,7 @@ object Dealer {
 
     fun deal(layout: Layout, random: Random): Deal {
         val positions = layout.positions
-        require(positions.size % 2 == 0) { "Nombre impair de positions : ${positions.size}" }
-        require(positions.size <= Face.fullSet().size) { "Plus de positions que de tuiles" }
+        checkSize(positions)
 
         val order = (1..MAX_ATTEMPTS).asSequence()
             .mapNotNull { removalOrder(positions, random) }
@@ -35,6 +34,25 @@ object Dealer {
         }
         // Les tuiles gardent l'ordre de la disposition, pour un plateau reproductible.
         return Deal(Board(positions.associateWith { tiles.getValue(it) }), order)
+    }
+
+    /**
+     * Pose les tuiles du jeu, mélangées, sur les positions, sans chercher de solution :
+     * la donne peut mener à une impasse quel que soit l'ordre des coups (mode difficile).
+     */
+    fun dealRandom(layout: Layout, random: Random): Board {
+        val positions = layout.positions
+        checkSize(positions)
+        // Des paires entières : chaque tuile a sa partenaire, même sur une petite disposition.
+        val faces = matchingPairs(random).take(positions.size / 2)
+            .flatMap { listOf(it.first, it.second) }
+            .shuffled(random)
+        return Board(positions.zip(faces).toMap())
+    }
+
+    private fun checkSize(positions: List<Position>) {
+        require(positions.size % 2 == 0) { "Nombre impair de positions : ${positions.size}" }
+        require(positions.size <= Face.fullSet().size) { "Plus de positions que de tuiles" }
     }
 
     /** Un ordre de retrait par paires qui vide [positions], ou null si le hasard a mené à une impasse. */

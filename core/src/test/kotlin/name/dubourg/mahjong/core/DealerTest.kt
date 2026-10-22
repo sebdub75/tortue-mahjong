@@ -57,6 +57,49 @@ class DealerTest {
         assertSolvedBy(deal)
     }
 
+    @Test
+    fun `un tirage au hasard occupe toutes les positions de la tortue avec le jeu complet`() {
+        val board = Dealer.dealRandom(Layouts.TURTLE, Random(1))
+        assertEquals(Layouts.TURTLE.positions.toSet(), board.tiles.keys)
+        assertEquals(
+            Face.fullSet().groupingBy { it }.eachCount(),
+            board.tiles.values.groupingBy { it }.eachCount(),
+        )
+    }
+
+    @Test
+    fun `un tirage au hasard dépend de la graine`() {
+        assertEquals(
+            Dealer.dealRandom(Layouts.TURTLE, Random(42)).tiles,
+            Dealer.dealRandom(Layouts.TURTLE, Random(42)).tiles,
+        )
+        assertNotEquals(
+            Dealer.dealRandom(Layouts.TURTLE, Random(1)).tiles,
+            Dealer.dealRandom(Layouts.TURTLE, Random(2)).tiles,
+        )
+    }
+
+    @Test
+    fun `un tirage au hasard ne garantit pas que la disposition se vide`() {
+        // Refusée par deal() : le tirage au hasard, lui, ne cherche pas de solution.
+        val board = Dealer.dealRandom(Layout("Pile", listOf(Position(0, 0, 0), Position(0, 0, 1))), Random(0))
+        assertEquals(2, board.tiles.size)
+        assertTrue(board.playablePairs().isEmpty())
+    }
+
+    @Test
+    fun `un tirage au hasard sur une petite disposition ne pose que des paires`() {
+        val row = Layout("Rangée", List(6) { Position(2 * it, 0, 0) })
+        val faces = Dealer.dealRandom(row, Random(3)).tiles.values.toList()
+        // Chaque tuile trouve sa partenaire : les tuiles assorties vont par nombre pair.
+        for (face in faces) assertEquals("$face", 0, faces.count { it.matches(face) } % 2)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `un tirage au hasard refuse un nombre impair de positions`() {
+        Dealer.dealRandom(Layout("Impair", listOf(Position(0, 0, 0))), Random(0))
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun `un nombre impair de positions est refusé`() {
         Dealer.deal(Layout("Impair", listOf(Position(0, 0, 0))), Random(0))

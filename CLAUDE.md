@@ -22,5 +22,9 @@ un Mahjong à plusieurs joueurs.
   tests : `./gradlew :core:test`
 - Annulation : `Game` garde la pile des plateaux précédents
   (voir [0007](docs/decisions/0007-annulation-des-coups.md))
+- Options : panneau `OptionsPanel` par-dessus le plateau, réglages dans `Settings`
+  (`SharedPreferences`) (voir [0008](docs/decisions/0008-ecran-options.md))
+- Mode difficile : donne tirée au hasard par `Dealer.dealRandom`, sans garantie de
+  solution ; à la sortie des options, nouvelle donne proposée si le mode a changé (voir [0009](docs/decisions/0009-mode-difficile.md))
 
 Documentation rédigée en français.
