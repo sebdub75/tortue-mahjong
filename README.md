@@ -7,6 +7,11 @@ Jeu de Mahjong solitaire pour Android, à un seul joueur, dans l'esprit de *Mahj
 - Les 144 tuiles sont empilées selon la disposition classique « tortue » : une pyramide
   sur 5 niveaux.
 - Le joueur retire des **paires de tuiles identiques** jusqu'à vider le plateau.
+  Deux fleurs quelconques s'apparient, de même deux saisons.
+- Composition du jeu, comme dans *Mahjong HD* : caractères, cercles et bambous (1 à 9)
+  et dragons en 4 exemplaires ; vents, fleurs et saisons en 2 exemplaires. Chaque vent
+  n'a donc qu'une seule partenaire. Voir
+  [0005](docs/decisions/0005-composition-du-jeu.md).
 - Une tuile ne peut être jouée que si elle est **libre** :
   - aucune tuile n'est posée dessus ;
   - son côté gauche **ou** son côté droit est dégagé.

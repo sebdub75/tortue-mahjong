@@ -53,9 +53,9 @@ object Dealer {
     }
 
     /**
-     * Les 72 paires du jeu complet, mélangées. Chaque groupe de quatre tuiles qui
-     * s'apparient (quatre exemplaires d'une face, ou les quatre fleurs, ou les quatre
-     * saisons) donne deux paires.
+     * Les 72 paires du jeu complet, mélangées. Chaque groupe de tuiles qui s'apparient
+     * est découpé en paires : quatre exemplaires d'une face donnent deux paires, les
+     * deux exemplaires d'un vent une seule, les huit fleurs (ou saisons) quatre.
      */
     private fun matchingPairs(random: Random): List<Pair<Face, Face>> =
         Face.fullSet()

@@ -15,11 +15,31 @@ class FaceTest {
     }
 
     @Test
-    fun `chaque face ordinaire est présente 4 fois, fleurs et saisons une seule`() {
+    fun `chiffres et dragons sont présents 4 fois, vents, fleurs et saisons 2 fois`() {
         val counts = Face.fullSet().groupingBy { it }.eachCount()
         for ((face, count) in counts) {
-            val expected = if (face.suit == Suit.FLOWER || face.suit == Suit.SEASON) 1 else 4
+            val expected = when (face.suit) {
+                Suit.WIND, Suit.FLOWER, Suit.SEASON -> 2
+                else -> 4
+            }
             assertEquals("$face", expected, count)
+        }
+    }
+
+    @Test
+    fun `le jeu complet compte 8 vents, 12 dragons, 8 fleurs et 8 saisons`() {
+        val bySuit = Face.fullSet().groupingBy { it.suit }.eachCount()
+        assertEquals(8, bySuit[Suit.WIND])
+        assertEquals(8, bySuit[Suit.FLOWER])
+        assertEquals(8, bySuit[Suit.SEASON])
+        assertEquals(12, bySuit[Suit.DRAGON])
+    }
+
+    @Test
+    fun `chaque vent n'a qu'une seule partenaire dans le jeu complet`() {
+        val set = Face.fullSet()
+        for (wind in (1..Suit.WIND.size).map { Face(Suit.WIND, it) }) {
+            assertEquals("$wind", 2, set.count { it.matches(wind) })
         }
     }
 
