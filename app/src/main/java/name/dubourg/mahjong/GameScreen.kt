@@ -134,6 +134,7 @@ fun GameScreen() {
     var game by remember { mutableStateOf(newGame(settings.hard)) }
     var showOptions by remember { mutableStateOf(false) }
     var offerNewDeal by remember { mutableStateOf(false) }
+    var confirmNewDeal by remember { mutableStateOf(false) }
     var boardSize by remember { mutableStateOf(Size.Zero) }
     // Marge sous les commandes pour aligner le bas du dernier bouton sur la rangée la plus
     // basse de la tortue (plateau et colonne partagent le même haut).
@@ -160,7 +161,10 @@ fun GameScreen() {
                 Label("Tuiles\n${board.tiles.size}")
                 Label("Paires jouables\n$pairs")
                 Label("Mode\n${modeName(game.hard).replaceFirstChar { it.uppercase() }}")
-                ActionButton("Nouvelle donne") { game = newGame(settings.hard) }
+                // Tortue vide : rien à perdre, la nouvelle donne se passe de confirmation.
+                ActionButton("Nouvelle donne") {
+                    if (board.tiles.isEmpty()) game = newGame(settings.hard) else confirmNewDeal = true
+                }
                 ActionButton("Annuler", enabled = game.canUndo) { game.undo() }
                 Spacer(Modifier.weight(1f))
                 ActionButton("Options") { showOptions = true }
@@ -187,6 +191,22 @@ fun GameScreen() {
                     // Bloqué : revenir en arrière vaut souvent mieux que tout recommencer.
                     if (board.tiles.isNotEmpty()) ActionButton("Annuler") { game.undo() }
                     ActionButton("Nouvelle donne") { game = newGame(settings.hard) }
+                }
+            }
+        }
+
+        if (confirmNewDeal) {
+            ModalPanel(onDismiss = { confirmNewDeal = false }) {
+                BasicText(
+                    "Abandonner la partie en cours\net commencer une nouvelle donne ?",
+                    style = TextStyle(TextColor, 22.sp, FontWeight.Bold, textAlign = TextAlign.Center),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    ActionButton("Continuer la partie") { confirmNewDeal = false }
+                    ActionButton("Nouvelle donne") {
+                        game = newGame(settings.hard)
+                        confirmNewDeal = false
+                    }
                 }
             }
         }
