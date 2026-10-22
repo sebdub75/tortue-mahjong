@@ -18,7 +18,6 @@
 
 # Outils de génération des tuiles (voir art/tiles/README.md)
 node_modules/
-/art/tiles/fleurs-saisons/YujiBoku-Regular.ttf
 
 # Gradle et Android
 /.gradle/

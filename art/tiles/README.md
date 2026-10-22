@@ -11,8 +11,8 @@ Les 42 motifs de la tortue, au format SVG 300 × 400. Chaque fichier ne contient
 | Bambous 1–9 | `fluffystuff/Sou1.svg` … `Sou9.svg` | 9 |
 | Vents est, sud, ouest, nord | `fluffystuff/Ton.svg`, `Nan.svg`, `Shaa.svg`, `Pei.svg` | 4 |
 | Dragons rouge, vert, blanc | `fluffystuff/Chun.svg`, `Hatsu.svg`, `Haku.svg` | 3 |
-| Fleurs 梅 蘭 菊 竹 | `fleurs-saisons/Flower1.svg` … `Flower4.svg` | 4 |
-| Saisons 春 夏 秋 冬 | `fleurs-saisons/Season1.svg` … `Season4.svg` | 4 |
+| Fleurs prunier, orchidée, chrysanthème, bambou | `fleurs-saisons/Flower1.svg` … `Flower4.svg` | 4 |
+| Saisons printemps, été, automne, hiver | `fleurs-saisons/Season1.svg` … `Season4.svg` | 4 |
 
 Plus le fond `fluffystuff/Front.svg` et le dos `fluffystuff/Back.svg`. Le dragon blanc
 (`Haku.svg`) est volontairement vide : c'est la face nue.
@@ -27,24 +27,23 @@ Plus le fond `fluffystuff/Front.svg` et le dos `fluffystuff/Back.svg`. Le dragon
 
 ## `fleurs-saisons/` — fleurs et saisons
 
-Le jeu FluffyStuff n'en contient pas. Elles sont produites par `generer.js` à partir
-de la police pinceau **Yuji Boku** (SIL Open Font License 1.1, `OFL-YujiBoku.txt`) :
-un grand caractère (fleurs en rouge, saisons en vert), épaissi pour égaler le trait
-FluffyStuff, et un numéro de un à quatre en noir dans le coin. Les glyphes sont
-convertis en tracés : les SVG ne dépendent d'aucune police.
+Le jeu FluffyStuff n'en contient pas. Elles sont dessinées pour le projet par
+`generer.js`, dans le style FluffyStuff (aplats cernés de noir, même palette, plus deux
+verts clairs pour les feuillages) : des illustrations plutôt que des caractères, pour
+qu'on les reconnaisse sans lire le chinois (voir la fiche
+[0010](../../docs/decisions/0010-fleurs-saisons-illustrees.md)).
 
-Pour régénérer :
+| Tuile | Motif |
+|---|---|
+| `Flower1` … `Flower4` | prunier, orchidée, chrysanthème, bambou |
+| `Season1` … `Season4` | pousse, soleil, feuille d'érable, flocon, entre deux traits verts |
+
+Œuvre originale du projet, sans source tierce. Le script n'a aucune dépendance :
 
 ```sh
 cd art/tiles/fleurs-saisons
-curl -LO https://raw.githubusercontent.com/google/fonts/main/ofl/yujiboku/YujiBoku-Regular.ttf
-# sha256 de la version utilisée :
-# 94fda16384f3bdac24376a000c57e99abfa314961bd89ef27badfb7410322003
-npm install
-node generer.js YujiBoku-Regular.ttf .
+node generer.js
 ```
-
-La police (8 Mo) et `node_modules/` ne sont pas versionnés.
 
 ## `drawable/` — VectorDrawable Android
 

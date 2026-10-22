@@ -24,10 +24,9 @@ variante `Regular`.
 ## Conséquences
 
 - **Fleurs et saisons à produire** : le jeu est fait pour le Riichi japonais et ne
-  contient ni fleurs ni saisons. Les 8 symboles manquants reprennent le modèle des
-  tuiles d'honneur : un grand caractère au pinceau (梅 蘭 菊 竹 en rouge, 春 夏 秋 冬 en
-  vert) et un numéro en noir dans le coin. Ils sont générés depuis la police libre
-  Yuji Boku (OFL) avec la palette FluffyStuff. Détails et régénération :
+  contient ni fleurs ni saisons. Les 8 symboles manquants sont dessinés pour le projet
+  dans le style FluffyStuff : des illustrations, voir
+  [0010](0010-fleurs-saisons-illustrees.md). Détails et régénération :
   [art/tiles/README.md](../../art/tiles/README.md).
 - **Rendu** : les symboles sont convertis en *VectorDrawable* Android. Le corps de la
   tuile (face, épaisseur, ombre selon le niveau, surbrillance des tuiles libres) est

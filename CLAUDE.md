@@ -9,8 +9,10 @@ un Mahjong à plusieurs joueurs.
   ajouter une pour chaque choix structurant)
 - Technologie : Kotlin + Jetpack Compose, règles dans un module `:core` en Kotlin pur
   testé avec JUnit (voir [0001](docs/decisions/0001-choix-kotlin-compose.md))
-- Tuiles : jeu SVG FluffyStuff (CC0), fleurs et saisons générées dans le même style ;
-  sources dans `art/tiles/` (voir [0002](docs/decisions/0002-tuiles-fluffystuff.md))
+- Tuiles : jeu SVG FluffyStuff (CC0), fleurs et saisons illustrées dans le même style
+  par `art/tiles/fleurs-saisons/generer.js` ; sources dans `art/tiles/` (voir
+  [0002](docs/decisions/0002-tuiles-fluffystuff.md),
+  [0010](docs/decisions/0010-fleurs-saisons-illustrees.md))
 - Rendu : fausse 3D en perspective cavalière dans le `Canvas`, `app/.../TileRenderer.kt`
   (voir [0003](docs/decisions/0003-rendu-tuiles-en-relief.md)) ; démo : `./demo.sh`
 - Application en paysage (voir [0004](docs/decisions/0004-orientation-paysage.md))
