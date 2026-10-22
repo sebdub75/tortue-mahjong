@@ -29,8 +29,8 @@ Détail et alternatives écartées : [docs/decisions/0001-choix-kotlin-compose.m
 Première version jouable : une donne de tortue, toujours soluble, en paysage. On
 touche deux tuiles libres qui s'apparient pour les retirer ; les tuiles bloquées sont
 assombries. Compteurs de tuiles et de paires jouables, bouton « Nouvelle donne »,
-message en fin de partie. Pas encore d'indice, d'annulation, de mélange ni de
-sauvegarde.
+bouton « Annuler » qui défait les coups un à un jusqu'à la donne, message en fin de
+partie. Pas encore d'indice, de mélange ni de sauvegarde.
 
 Les règles sont dans le module `:core`, testé avec JUnit (`./gradlew :core:test`).
 

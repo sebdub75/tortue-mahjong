@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import name.dubourg.mahjong.core.Board
 import name.dubourg.mahjong.core.Dealer
 import name.dubourg.mahjong.core.Face
+import name.dubourg.mahjong.core.Game
 import name.dubourg.mahjong.core.Layouts
 import name.dubourg.mahjong.core.Position
 import kotlin.math.min
@@ -49,10 +50,13 @@ private val drawOrder = compareBy<Position> { it.z }.thenByDescending { it.x }.t
 private val TextColor = Color(0xFFF1ECE2)
 private val ButtonColor = Color(0x33FFFFFF)
 
-/** Partie en cours : le plateau et la tuile sélectionnée. */
-private class Game(board: Board) {
-    var board by mutableStateOf(board)
+/** Partie en cours, avec son historique, et la tuile sélectionnée. */
+private class GameState(board: Board) {
+    private var game by mutableStateOf(Game(board))
     var selected by mutableStateOf<Position?>(null)
+
+    val board: Board get() = game.board
+    val canUndo: Boolean get() = game.canUndo
 
     /** Toucher une tuile : la sélectionner, ou retirer la paire si elle s'apparie. */
     fun tap(p: Position) {
@@ -61,15 +65,22 @@ private class Game(board: Board) {
             !board.isFree(p) -> Unit
             current == p -> selected = null
             current != null && board.canRemove(current, p) -> {
-                board = board.remove(current, p)
+                game = game.play(current, p)
                 selected = null
             }
             else -> selected = p
         }
     }
+
+    /** Annuler le dernier coup ; la sélection en cours est abandonnée. */
+    fun undo() {
+        if (!canUndo) return
+        game = game.undo()
+        selected = null
+    }
 }
 
-private fun newGame() = Game(Dealer.deal(Layouts.TURTLE, Random.Default).board)
+private fun newGame() = GameState(Dealer.deal(Layouts.TURTLE, Random.Default).board)
 
 /** Taille des tuiles et position du plateau, pour qu'il tienne centré dans [canvas]. */
 private class BoardLayout(positions: Collection<Position>, canvas: Size) {
@@ -116,6 +127,7 @@ fun GameScreen() {
                 Label("Tuiles\n${board.tiles.size}")
                 Label("Paires jouables\n$pairs")
                 ActionButton("Nouvelle donne") { game = newGame() }
+                ActionButton("Annuler", enabled = game.canUndo) { game.undo() }
             }
             BoardCanvas(game, Modifier.fillMaxSize())
         }
@@ -135,14 +147,18 @@ fun GameScreen() {
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 BasicText(message, style = TextStyle(TextColor, 28.sp, FontWeight.Bold))
-                ActionButton("Nouvelle donne") { game = newGame() }
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    // Bloqué : revenir en arrière vaut souvent mieux que tout recommencer.
+                    if (board.tiles.isNotEmpty()) ActionButton("Annuler") { game.undo() }
+                    ActionButton("Nouvelle donne") { game = newGame() }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun BoardCanvas(game: Game, modifier: Modifier) {
+private fun BoardCanvas(game: GameState, modifier: Modifier) {
     val painters = Face.fullSet().distinct().associateWith { painterResource(it.drawable) }
     // Images de la tuile nue, refaites seulement quand la taille des tuiles change.
     val spriteCache = remember { arrayOfNulls<TileSprites>(1) }
@@ -187,13 +203,13 @@ private fun Label(text: String) {
 }
 
 @Composable
-private fun ActionButton(text: String, onClick: () -> Unit) {
+private fun ActionButton(text: String, enabled: Boolean = true, onClick: () -> Unit) {
     BasicText(
         text,
         Modifier
             .background(ButtonColor, RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick)
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 10.dp),
-        style = TextStyle(TextColor, 16.sp, FontWeight.Medium),
+        style = TextStyle(if (enabled) TextColor else TextColor.copy(alpha = 0.35f), 16.sp, FontWeight.Medium),
     )
 }

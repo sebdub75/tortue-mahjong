@@ -18,7 +18,9 @@ un Mahjong à plusieurs joueurs.
   (voir [0005](docs/decisions/0005-composition-du-jeu.md))
 - Icône : paire de 中 en relief, icône adaptative vectorielle générée par
   `node art/icone/generer.js` (voir [0006](docs/decisions/0006-icone-application.md))
-- Règles : `core/` (`Face`, `Board`, `Layouts`, `Dealer`), coordonnées en demi-tuiles ;
+- Règles : `core/` (`Face`, `Board`, `Layouts`, `Dealer`, `Game`), coordonnées en demi-tuiles ;
   tests : `./gradlew :core:test`
+- Annulation : `Game` garde la pile des plateaux précédents
+  (voir [0007](docs/decisions/0007-annulation-des-coups.md))
 
 Documentation rédigée en français.
