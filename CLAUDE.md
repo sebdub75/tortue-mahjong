@@ -16,6 +16,8 @@ un Mahjong à plusieurs joueurs.
 - Application en paysage (voir [0004](docs/decisions/0004-orientation-paysage.md))
 - Composition du jeu : celle de *Mahjong HD*, vents, fleurs et saisons en 2 exemplaires
   (voir [0005](docs/decisions/0005-composition-du-jeu.md))
+- Icône : paire de 中 en relief, icône adaptative vectorielle générée par
+  `node art/icone/generer.js` (voir [0006](docs/decisions/0006-icone-application.md))
 - Règles : `core/` (`Face`, `Board`, `Layouts`, `Dealer`), coordonnées en demi-tuiles ;
   tests : `./gradlew :core:test`
 
