@@ -14,8 +14,8 @@ paires jouables, et des appuis successifs les passent toutes en revue.
   rang de la paire montrée : « Aide 3/14 ». Il est grisé quand aucune paire n'est
   jouable : le message « Plus aucune paire jouable » prend alors le relais.
 - Après la dernière paire, l'appui suivant revient à la première.
-- Toucher le fond du plateau, hors de toute tuile, éteint l'aide. Le bouton ne
-  l'éteint jamais, puisqu'il reboucle.
+- Toucher le fond du plateau, hors de toute tuile, éteint l'aide et abandonne la
+  tuile sélectionnée. Le bouton n'éteint jamais l'aide, puisqu'il reboucle.
 - Les deux tuiles de la paire montrée ont la face voilée de bleu (`HintColor`), une
   teinte distincte du doré de la sélection.
 - `Board.playablePairs()` groupe les paires par motif, dans l'ordre du jeu

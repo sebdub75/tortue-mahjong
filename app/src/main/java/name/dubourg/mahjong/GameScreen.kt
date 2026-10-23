@@ -80,8 +80,9 @@ private class GameState(board: Board, val hard: Boolean) {
         hint = ((hint ?: -1) + 1) % count
     }
 
-    /** Éteindre l'aide. */
-    fun clearHint() {
+    /** Toucher le fond du plateau : abandonner la sélection et éteindre l'aide. */
+    fun tapBackground() {
+        selected = null
         hint = null
     }
 
@@ -275,10 +276,10 @@ private fun BoardCanvas(game: GameState, modifier: Modifier) {
                 val canvas = Size(size.width.toFloat(), size.height.toFloat())
                 val layout = BoardLayout(Layouts.TURTLE.positions, canvas)
                 // La tuile visée est la dernière dessinée sous le doigt, donc la plus haute ;
-                // toucher le fond éteint l'aide.
+                // toucher le fond abandonne la sélection et éteint l'aide.
                 val target = game.board.tiles.keys.sortedWith(drawOrder)
                     .lastOrNull { layout.faceRect(it).contains(down.position) }
-                if (target != null) game.tap(target) else game.clearHint()
+                if (target != null) game.tap(target) else game.tapBackground()
             }
         },
     ) {
