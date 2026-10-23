@@ -28,5 +28,8 @@ un Mahjong à plusieurs joueurs.
   (`SharedPreferences`) (voir [0008](docs/decisions/0008-ecran-options.md))
 - Mode difficile : donne tirée au hasard par `Dealer.dealRandom`, sans garantie de
   solution ; à la sortie des options, nouvelle donne proposée si le mode a changé (voir [0009](docs/decisions/0009-mode-difficile.md))
+- Aide : bouton « Aide » qui montre en bleu, appui après appui, chaque paire de
+  `Board.playablePairs()` (groupées par motif), rang dans `GameState.hint` (voir
+  [0011](docs/decisions/0011-aide-coups-possibles.md))
 
 Documentation rédigée en français.

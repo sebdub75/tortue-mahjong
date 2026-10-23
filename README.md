@@ -31,8 +31,9 @@ touche deux tuiles libres qui s'apparient pour les retirer ; les tuiles bloquée
 assombries. Compteurs de tuiles et de paires jouables, bouton « Nouvelle donne »,
 bouton « Annuler » qui défait les coups un à un jusqu'à la donne, message en fin de
 partie. Écran d'options avec une case « Difficile » : les donnes
-sont alors tirées au hasard, sans garantie d'être solubles.
-Pas encore d'indice, de mélange ni de sauvegarde.
+sont alors tirées au hasard, sans garantie d'être solubles. Bouton « Aide » qui
+montre, appui après appui, chacune des paires jouables.
+Pas encore de mélange ni de sauvegarde.
 
 Les règles sont dans le module `:core`, testé avec JUnit (`./gradlew :core:test`).
 

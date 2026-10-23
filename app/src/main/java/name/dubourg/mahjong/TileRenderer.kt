@@ -53,6 +53,7 @@ private val BackColor = Color(0xFFA53C3C) // rouge du dos FluffyStuff (Back.svg)
 private val Outline = Color(0x59000000)
 private val ShadowColor = Color(0x66000000)
 private val Highlight = Color(0x66FFD54F)
+private val HintColor = Color(0x664FC3F7)
 private val Dim = Color(0x2E000000)
 
 /**
@@ -67,7 +68,7 @@ class TileSprites(val metrics: TileMetrics) {
     val bodyOffset: Offset
     private val withSymbol = HashMap<Painter, ImageBitmap>()
 
-    /** Contour de la face, coin haut-gauche en (0, 0), pour la sélection et l'assombrissement. */
+    /** Contour de la face, coin haut-gauche en (0, 0), pour la sélection, l'aide et l'assombrissement. */
     val facePath: Path
 
     init {
@@ -143,7 +144,8 @@ private fun sprite(width: Float, height: Float, block: DrawScope.() -> Unit): Im
 
 /**
  * Dessine une tuile complète dont la face occupe [face] : ombre portée, corps, symbole.
- * Une tuile [dimmed] (bloquée) a la face assombrie.
+ * Une tuile [selected] a la face dorée, une tuile [hinted] (suggérée par l'aide) bleutée,
+ * une tuile [dimmed] (bloquée) assombrie.
  *
  * Les tuiles doivent être dessinées niveau par niveau, et dans un niveau de droite à
  * gauche puis de haut en bas, pour que chaque face recouvre la tranche de ses voisines.
@@ -153,6 +155,7 @@ fun DrawScope.drawTile(
     sprites: TileSprites,
     symbol: Painter,
     selected: Boolean = false,
+    hinted: Boolean = false,
     dimmed: Boolean = false,
 ) {
     // Calée sur le pixel, pour que les images ne soient pas rééchantillonnées.
@@ -162,6 +165,7 @@ fun DrawScope.drawTile(
 
     translate(origin.x, origin.y) {
         if (selected) drawPath(sprites.facePath, Highlight)
+        if (hinted) drawPath(sprites.facePath, HintColor)
         if (dimmed) drawPath(sprites.facePath, Dim)
     }
 }

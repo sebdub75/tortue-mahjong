@@ -57,13 +57,28 @@ private val drawOrder = compareBy<Position> { it.z }.thenByDescending { it.x }.t
 internal val TextColor = Color(0xFFF1ECE2)
 internal val ButtonColor = Color(0x33FFFFFF)
 
-/** Partie en cours, distribuée en mode difficile ou non, avec son historique et la tuile sélectionnée. */
+/**
+ * Partie en cours, distribuée en mode difficile ou non, avec son historique, la tuile
+ * sélectionnée et le rang de la paire montrée par l'aide.
+ */
 private class GameState(board: Board, val hard: Boolean) {
     private var game by mutableStateOf(Game(board))
     var selected by mutableStateOf<Position?>(null)
 
+    /** Rang, dans [Board.playablePairs], de la paire montrée par l'aide ; null sans aide. */
+    var hint by mutableStateOf<Int?>(null)
+        private set
+
     val board: Board get() = game.board
     val canUndo: Boolean get() = game.canUndo
+    val hintPair: Pair<Position, Position>? get() = hint?.let { board.playablePairs().getOrNull(it) }
+
+    /** Montrer la paire jouable suivante, en revenant à la première après la dernière. */
+    fun nextHint() {
+        val count = board.playablePairs().size
+        if (count == 0) return
+        hint = ((hint ?: -1) + 1) % count
+    }
 
     /** Toucher une tuile : la sélectionner, ou retirer la paire si elle s'apparie. */
     fun tap(p: Position) {
@@ -74,6 +89,7 @@ private class GameState(board: Board, val hard: Boolean) {
             current != null && board.canRemove(current, p) -> {
                 game = game.play(current, p)
                 selected = null
+                hint = null
             }
             else -> selected = p
         }
@@ -84,6 +100,7 @@ private class GameState(board: Board, val hard: Boolean) {
         if (!canUndo) return
         game = game.undo()
         selected = null
+        hint = null
     }
 }
 
@@ -166,6 +183,9 @@ fun GameScreen() {
                     if (board.tiles.isEmpty()) game = newGame(settings.hard) else confirmNewDeal = true
                 }
                 ActionButton("Annuler", enabled = game.canUndo) { game.undo() }
+                ActionButton(game.hint?.let { "Aide ${it + 1}/$pairs" } ?: "Aide", enabled = pairs > 0) {
+                    game.nextHint()
+                }
                 Spacer(Modifier.weight(1f))
                 ActionButton("Options") { showOptions = true }
             }
@@ -260,6 +280,7 @@ private fun BoardCanvas(game: GameState, modifier: Modifier) {
         if (board.tiles.isEmpty()) return@Canvas
         // Cadrage calculé sur la disposition complète : le plateau ne bouge pas en cours de partie.
         val layout = BoardLayout(Layouts.TURTLE.positions, size)
+        val hint = game.hintPair
         val sprites = spriteCache[0]?.takeIf { it.metrics == layout.metrics }
             ?: TileSprites(layout.metrics).also { spriteCache[0] = it }
         for (p in board.tiles.keys.sortedWith(drawOrder)) {
@@ -268,6 +289,7 @@ private fun BoardCanvas(game: GameState, modifier: Modifier) {
                 sprites,
                 painters.getValue(board.tiles.getValue(p)),
                 selected = p == game.selected,
+                hinted = hint != null && (p == hint.first || p == hint.second),
                 dimmed = !board.isFree(p),
             )
         }

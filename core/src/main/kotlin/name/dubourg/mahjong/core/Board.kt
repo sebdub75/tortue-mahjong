@@ -29,16 +29,23 @@ class Board(val tiles: Map<Position, Face>) {
         return Board(tiles - a - b)
     }
 
-    /** Toutes les paires jouables, dans l'ordre des tuiles du plateau. */
+    /**
+     * Toutes les paires jouables, groupées par motif dans l'ordre du jeu (fleurs d'un
+     * seul tenant, saisons de même), puis dans l'ordre des tuiles du plateau.
+     */
     fun playablePairs(): List<Pair<Position, Position>> {
         val free = tiles.keys.filter { isFree(it) }
         return free.indices.flatMap { i ->
             (i + 1 until free.size)
                 .filter { j -> tiles.getValue(free[i]).matches(tiles.getValue(free[j])) }
                 .map { j -> free[i] to free[j] }
-        }
+        }.sortedWith(compareBy({ tiles.getValue(it.first).suit }, { tiles.getValue(it.first).groupRank }))
     }
 }
+
+/** Rang de la tuile parmi les groupes de sa famille : fleurs et saisons n'en forment qu'un. */
+private val Face.groupRank: Int
+    get() = if (suit == Suit.FLOWER || suit == Suit.SEASON) 0 else rank
 
 /**
  * Règle de la tuile libre, sur les seules positions occupées [occupied] : rien n'est
