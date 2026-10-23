@@ -80,6 +80,11 @@ private class GameState(board: Board, val hard: Boolean) {
         hint = ((hint ?: -1) + 1) % count
     }
 
+    /** Éteindre l'aide. */
+    fun clearHint() {
+        hint = null
+    }
+
     /** Toucher une tuile : la sélectionner, ou retirer la paire si elle s'apparie. */
     fun tap(p: Position) {
         val current = selected
@@ -269,10 +274,11 @@ private fun BoardCanvas(game: GameState, modifier: Modifier) {
                 if (waitForUpOrCancellation() == null) return@awaitEachGesture
                 val canvas = Size(size.width.toFloat(), size.height.toFloat())
                 val layout = BoardLayout(Layouts.TURTLE.positions, canvas)
-                // La tuile visée est la dernière dessinée sous le doigt, donc la plus haute.
-                game.board.tiles.keys.sortedWith(drawOrder)
+                // La tuile visée est la dernière dessinée sous le doigt, donc la plus haute ;
+                // toucher le fond éteint l'aide.
+                val target = game.board.tiles.keys.sortedWith(drawOrder)
                     .lastOrNull { layout.faceRect(it).contains(down.position) }
-                    ?.let(game::tap)
+                if (target != null) game.tap(target) else game.clearHint()
             }
         },
     ) {
