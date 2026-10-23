@@ -74,4 +74,39 @@ class GameTest {
     fun `jouer une paire interdite est une erreur`() {
         Game(start).play(a, c)
     }
+
+    @Test
+    fun `une partie relue a le même plateau et le même historique`() {
+        val game = Game.decode(Game(start).play(a, b).encode())
+        assertEquals(listOf(c, d), game.board.tiles.keys.toList())
+        assertEquals(mapOf(a to man1, b to man1, c to pin1, d to pin1), game.undo().board.tiles)
+        assertEquals(listOf(a, b, c, d), game.undo().board.tiles.keys.toList())
+        assertFalse(game.undo().canUndo)
+    }
+
+    @Test
+    fun `une partie sans coup se relit`() {
+        val game = Game.decode(Game(start).encode())
+        assertEquals(start.tiles, game.board.tiles)
+        assertFalse(game.canUndo)
+    }
+
+    @Test
+    fun `une donne complète se relit à l'identique`() {
+        val deal = Dealer.deal(Layouts.TURTLE, kotlin.random.Random(7))
+        val played = deal.solution.take(10).fold(Game(deal.board)) { g, (p, q) -> g.play(p, q) }
+        val text = played.encode()
+        assertEquals(text, Game.decode(text).encode())
+        assertEquals(played.board.tiles.keys.toList(), Game.decode(text).board.tiles.keys.toList())
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `un texte invalide est une erreur`() {
+        Game.decode("n'importe quoi")
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `un coup interdit dans la sauvegarde est une erreur`() {
+        Game.decode("0,0,0,CHARACTERS,1;4,0,0,DOTS,1\n0,0,0,4,0,0")
+    }
 }

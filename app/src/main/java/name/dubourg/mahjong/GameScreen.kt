@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,8 +62,9 @@ internal val ButtonColor = Color(0x33FFFFFF)
  * Partie en cours, distribuée en mode difficile ou non, avec son historique, la tuile
  * sélectionnée et le rang de la paire montrée par l'aide.
  */
-private class GameState(board: Board, val hard: Boolean) {
-    private var game by mutableStateOf(Game(board))
+private class GameState(game: Game, val hard: Boolean) {
+    var game by mutableStateOf(game)
+        private set
     var selected by mutableStateOf<Position?>(null)
 
     /** Rang, dans [Board.playablePairs], de la paire montrée par l'aide ; null sans aide. */
@@ -112,8 +114,10 @@ private class GameState(board: Board, val hard: Boolean) {
 
 /** Nouvelle donne : soluble, ou tirée au hasard en mode difficile. */
 private fun newGame(hard: Boolean) = GameState(
-    if (hard) Dealer.dealRandom(Layouts.TURTLE, Random.Default)
-    else Dealer.deal(Layouts.TURTLE, Random.Default).board,
+    Game(
+        if (hard) Dealer.dealRandom(Layouts.TURTLE, Random.Default)
+        else Dealer.deal(Layouts.TURTLE, Random.Default).board,
+    ),
     hard,
 )
 
@@ -152,9 +156,15 @@ private class BoardLayout(positions: Collection<Position>, canvas: Size) {
 fun GameScreen() {
     val context = LocalContext.current
     val settings = remember { Settings(context.applicationContext) }
+    val saved = remember { SavedGame(context.applicationContext) }
     // Changer de mode ne touche pas la partie en cours : à la sortie des options, on
     // propose une nouvelle donne ; si le joueur la refuse, le mode vaut pour la suivante.
-    var game by remember { mutableStateOf(newGame(settings.hard)) }
+    var game by remember {
+        mutableStateOf(saved.load()?.let { (g, hard) -> GameState(g, hard) } ?: newGame(settings.hard))
+    }
+    // Enregistrement à chaque coup, annulation ou nouvelle donne : rien n'est perdu si
+    // l'activité est recréée ou l'appli arrêtée.
+    LaunchedEffect(game, game.game) { saved.save(game.game, game.hard) }
     var showOptions by remember { mutableStateOf(false) }
     var offerNewDeal by remember { mutableStateOf(false) }
     var confirmNewDeal by remember { mutableStateOf(false) }

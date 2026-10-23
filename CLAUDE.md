@@ -31,5 +31,8 @@ un Mahjong à plusieurs joueurs.
 - Aide : bouton « Aide » qui montre en bleu, appui après appui, chaque paire de
   `Board.playablePairs()` (groupées par motif), rang dans `GameState.hint` (voir
   [0011](docs/decisions/0011-aide-coups-possibles.md))
+- Sauvegarde : `SavedGame` enregistre à chaque coup `Game.encode()` (donne + coups),
+  reprise au lancement par `Game.decode()` (voir
+  [0012](docs/decisions/0012-sauvegarde-de-la-partie.md))
 
 Documentation rédigée en français.
