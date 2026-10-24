@@ -1,0 +1,21 @@
+=== 1000 donnes au hasard, budget 1000000 plateaux ===
+abandon : 125 (12,5 %)
+insoluble : 28 (2,8 %)
+soluble : 847 (84,7 %)
+bloquées dès la donne : 0 (0,0 %)
+ms abandon             n= 125  médiane   1248,7  p90   1450,9  p99   1553,0  max   1617,1
+plateaux abandon       n= 125  médiane 1000001,0  p90 1000001,0  p99 1000001,0  max 1000001,0
+ms insoluble           n=  28  médiane      0,0  p90      0,0  p99      0,1  max      1,0
+plateaux insoluble     n=  28  médiane      1,0  p90      1,0  p99      1,0  max      1,0
+ms soluble             n= 847  médiane      3,7  p90    148,6  p99    781,5  max   1191,7
+plateaux soluble       n= 847  médiane   2451,0  p90 126219,0  p99 598734,0  max 985293,0
+ms toutes              n=1000  médiane      5,7  p90   1122,9  p99   1483,6  max   1617,1
+budget/essai  acceptées  ms/essai moyen  ms par donne acceptée (moyenne)
+        5000     46,5 %             4,0             8,6
+       10000     57,0 %             6,8            11,9
+       20000     63,8 %            11,4            17,9
+       50000     69,7 %            22,7            32,6
+      100000     75,2 %            37,9            50,3
+      200000     79,1 %            62,4            78,9
+      500000     82,2 %           122,0           148,4
+     1000000     84,7 %           203,5           240,3
