@@ -28,10 +28,14 @@ un Mahjong à plusieurs joueurs.
   (`SharedPreferences`) (voir [0008](docs/decisions/0008-ecran-options.md))
 - Mode difficile : donne tirée au hasard ; option « Solution garantie » (cochée par
   défaut) qui ne garde que les tirages vidés par `Solver` (`Dealer.dealSolvable`,
-  calculé hors du thread UI), sinon `Dealer.dealRandom` ; trois modes dans `Mode` ; à
+  calculé hors du thread UI), sinon `Dealer.dealRandom` ; quatre modes dans `Mode` ; à
   la sortie des options, nouvelle donne proposée si le mode a changé (voir
   [0009](docs/decisions/0009-mode-difficile.md),
   [0013](docs/decisions/0013-solution-garantie.md), étude `poc/donnes-solubles/`)
+- Mode expert : sous « Solution garantie », option « Difficulté garantie » ; donne prise
+  parmi des graines calculées à l'avance (`ExpertSeeds`, `ExpertSeedList.kt` généré par
+  `poc/donnes-expert/generer.sh`), servie par `Dealer.dealExpert` (voir
+  [0014](docs/decisions/0014-mode-expert.md))
 - Aide : bouton « Aide » qui montre en bleu, appui après appui, chaque paire de
   `Board.playablePairs(first)` (groupées par motif, celles de la tuile sélectionnée
   d'abord), rang dans `GameState.hint` (voir

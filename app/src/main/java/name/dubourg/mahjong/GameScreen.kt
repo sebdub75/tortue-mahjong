@@ -133,8 +133,8 @@ private class GameState(game: Game, val mode: Mode) {
 
 /**
  * Nouvelle donne : construite soluble en mode normal, tirée au hasard en mode difficile,
- * puis vérifiée par le solveur si la solution est garantie. Ce dernier cas prend
- * plusieurs dizaines de millisecondes.
+ * puis vérifiée par le solveur si la solution est garantie (plusieurs dizaines de
+ * millisecondes), ou prise parmi les donnes expert calculées à l'avance.
  */
 private fun newGame(mode: Mode) = GameState(
     Game(
@@ -142,6 +142,7 @@ private fun newGame(mode: Mode) = GameState(
             Mode.NORMAL -> Dealer.deal(Layouts.TURTLE, Random.Default).board
             Mode.HARD -> Dealer.dealSolvable(Layouts.TURTLE, Random.Default).board
             Mode.HARD_UNCHECKED -> Dealer.dealRandom(Layouts.TURTLE, Random.Default)
+            Mode.EXPERT -> Dealer.dealExpert(Random.Default)
         },
     ),
     mode,

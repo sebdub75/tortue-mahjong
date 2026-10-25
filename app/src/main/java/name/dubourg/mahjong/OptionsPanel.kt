@@ -38,6 +38,12 @@ fun OptionsPanel(settings: Settings, onClose: () -> Unit) {
                     settings.guaranteed = it
                 }
             }
+            // Les donnes expert sont choisies parmi les solubles : sans objet sans garantie.
+            if (settings.hard && settings.guaranteed) {
+                CheckOption("Difficulté garantie", settings.expert, Modifier.padding(start = 64.dp)) {
+                    settings.expert = it
+                }
+            }
         }
         ActionButton("Fermer", onClick = onClose)
     }

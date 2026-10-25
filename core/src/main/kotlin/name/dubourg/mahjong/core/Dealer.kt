@@ -7,7 +7,8 @@ class Deal(val board: Board, val solution: List<Pair<Position, Position>>)
 
 /**
  * Distribue les donnes : toujours solubles avec [deal], au hasard avec [dealRandom], au
- * hasard mais vérifiées par le solveur avec [dealSolvable].
+ * hasard mais vérifiées par le solveur avec [dealSolvable], choisies à l'avance pour leur
+ * difficulté avec [dealExpert].
  *
  * On simule d'abord une partie sur la disposition seule, sans les faces : à chaque tour,
  * deux positions libres tirées au hasard sont retirées. Si l'on se retrouve avec moins de
@@ -69,6 +70,16 @@ object Dealer {
             if (solution is Solution.Found) return Deal(board, solution.moves)
         }
         throw IllegalArgumentException("Aucune donne soluble trouvée pour « ${layout.name} »")
+    }
+
+    /**
+     * Donne du mode expert : une tortue tirée parmi celles d'[ExpertSeeds], solubles et
+     * très piégeuses. Instantané : le tri a été fait à l'avance.
+     */
+    fun dealExpert(random: Random): Board {
+        val seeds = ExpertSeeds.seeds
+        check(seeds.isNotEmpty()) { "Aucune graine expert : lancer poc/donnes-expert/generer.sh" }
+        return dealRandom(Layouts.TURTLE, Random(seeds[random.nextInt(seeds.size)]))
     }
 
     private fun checkSize(positions: List<Position>) {

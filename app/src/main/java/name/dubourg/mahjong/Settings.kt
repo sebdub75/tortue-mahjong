@@ -15,6 +15,9 @@ enum class Mode(val label: String) {
 
     /** Donne au hasard sans vérification (`Dealer.dealRandom`) : peut être perdue d'avance. */
     HARD_UNCHECKED("difficile sans garantie"),
+
+    /** Donne soluble et très piégeuse, choisie à l'avance (`Dealer.dealExpert`). */
+    EXPERT("expert"),
 }
 
 /** Options du joueur, conservées d'un lancement à l'autre. */
@@ -22,6 +25,7 @@ class Settings(context: Context) {
     private val prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     private var hardState by mutableStateOf(prefs.getBoolean(KEY_HARD, false))
     private var guaranteedState by mutableStateOf(prefs.getBoolean(KEY_GUARANTEED, true))
+    private var expertState by mutableStateOf(prefs.getBoolean(KEY_EXPERT, false))
 
     /** Mode difficile : donne tirée au hasard. */
     var hard: Boolean
@@ -39,16 +43,26 @@ class Settings(context: Context) {
             prefs.edit().putBoolean(KEY_GUARANTEED, value).apply()
         }
 
+    /** Avec la solution garantie, ne servir que des donnes très piégeuses (mode expert). */
+    var expert: Boolean
+        get() = expertState
+        set(value) {
+            expertState = value
+            prefs.edit().putBoolean(KEY_EXPERT, value).apply()
+        }
+
     /** Mode des prochaines donnes. */
     val mode: Mode
         get() = when {
             !hard -> Mode.NORMAL
-            guaranteed -> Mode.HARD
-            else -> Mode.HARD_UNCHECKED
+            !guaranteed -> Mode.HARD_UNCHECKED
+            expert -> Mode.EXPERT
+            else -> Mode.HARD
         }
 
     private companion object {
         const val KEY_HARD = "hard"
         const val KEY_GUARANTEED = "guaranteed"
+        const val KEY_EXPERT = "expert"
     }
 }

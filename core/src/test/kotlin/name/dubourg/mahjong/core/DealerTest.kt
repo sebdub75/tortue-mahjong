@@ -133,6 +133,18 @@ class DealerTest {
         )
     }
 
+    @Test
+    fun `une donne expert est la tortue d'une graine de la liste`() {
+        val board = Dealer.dealExpert(Random(0))
+        assertTrue(ExpertSeeds.seeds.any { Dealer.dealRandom(Layouts.TURTLE, Random(it)).tiles == board.tiles })
+    }
+
+    @Test
+    fun `les graines expert sont distinctes et assez nombreuses`() {
+        assertEquals(ExpertSeeds.seeds.size, ExpertSeeds.seeds.toSet().size)
+        assertTrue(ExpertSeeds.seeds.size >= 1000)
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun `un tirage soluble refuse une disposition impossible à vider`() {
         Dealer.dealSolvable(Layout("Pile", listOf(Position(0, 0, 0), Position(0, 0, 1))), Random(0))
