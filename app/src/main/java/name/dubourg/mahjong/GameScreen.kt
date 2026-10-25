@@ -1,6 +1,7 @@
 package name.dubourg.mahjong
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -225,26 +227,37 @@ fun GameScreen() {
     ) {
         Row(Modifier.fillMaxSize().safeDrawingPadding()) {
             // Le plateau est limité par la hauteur : les commandes prennent place à gauche.
+            // Compteurs sur une ligne chacun : avec une grande police, la colonne doit tenir
+            // en hauteur (voir 0015).
             Column(
                 Modifier.fillMaxHeight().width(150.dp)
                     .padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = bottomGap),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Label("Tuiles\n${board.tiles.size}")
-                Label("Paires jouables\n$pairs")
-                Label("Mode\n${game.mode.label.replaceFirstChar { it.uppercase() }}")
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Label("${board.tiles.size} tuiles")
+                    Label("$pairs paires")
+                    Label(game.mode.label.replaceFirstChar { it.uppercase() })
+                }
                 // Tortue vide : rien à perdre, la nouvelle donne se passe de confirmation.
                 ActionButton("Nouvelle donne") {
                     if (board.tiles.isEmpty()) deal() else confirmNewDeal = true
                 }
-                ActionButton("Annuler", enabled = game.canUndo) { game.undo() }
-                ActionButton(game.hint?.let { "Aide ${it + 1}/$pairs" } ?: "Aide", enabled = pairs > 0) {
+                // Coups de la partie en bas, à l'écart de la nouvelle donne qui l'abandonne.
+                Spacer(Modifier.weight(1f))
+                IconButton(R.drawable.ic_undo, "Annuler", enabled = game.canUndo) { game.undo() }
+                IconButton(R.drawable.ic_hint, "Aide", game.hint?.let { "${it + 1}/$pairs" }, enabled = pairs > 0) {
                     game.nextHint()
                 }
-                Spacer(Modifier.weight(1f))
-                ActionButton("Options") { showOptions = true }
             }
-            BoardCanvas(game, Modifier.fillMaxSize().onSizeChanged { boardSize = it.toSize() })
+            Box(Modifier.fillMaxSize()) {
+                BoardCanvas(game, Modifier.fillMaxSize().onSizeChanged { boardSize = it.toSize() })
+                // Coin haut droit, toujours vide : la tortue n'y a que ses tuiles d'extrémité,
+                // à mi-hauteur. Icône en dp, insensible à la police du système.
+                IconButton(R.drawable.ic_options, "Options", modifier = Modifier.align(Alignment.TopEnd).padding(12.dp)) {
+                    showOptions = true
+                }
+            }
         }
 
         val message = when {
@@ -373,4 +386,31 @@ internal fun ActionButton(text: String, enabled: Boolean = true, onClick: () -> 
             .padding(horizontal = 14.dp, vertical = 10.dp),
         style = TextStyle(if (enabled) TextColor else TextColor.copy(alpha = 0.35f), 16.sp, FontWeight.Medium),
     )
+}
+
+/**
+ * Bouton à icône, dessinée en dp : insensible à la police du système. [badge], s'il est
+ * donné, s'affiche à droite de l'icône (rang de la paire montrée par l'aide).
+ */
+@Composable
+private fun IconButton(
+    icon: Int,
+    description: String,
+    badge: String? = null,
+    enabled: Boolean = true,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val alpha = if (enabled) 1f else 0.35f
+    Row(
+        modifier
+            .background(ButtonColor, RoundedCornerShape(8.dp))
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Image(painterResource(icon), description, Modifier.size(28.dp), alpha = alpha)
+        if (badge != null) BasicText(badge, style = TextStyle(TextColor.copy(alpha = alpha), 16.sp, FontWeight.Medium))
+    }
 }

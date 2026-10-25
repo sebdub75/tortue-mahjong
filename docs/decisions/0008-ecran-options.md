@@ -13,6 +13,8 @@ sans effet, puis branchée sur la donne ([0009](0009-mode-difficile.md)).
 - Un bouton « Options » dans la colonne de commandes ouvre `OptionsPanel`
   (`OptionsPanel.kt`), un panneau posé par-dessus le plateau sur un voile sombre.
   « Fermer », un toucher sur le voile ou le bouton retour le referment.
+  Depuis [0015](0015-taille-de-police.md), le bouton est une roue dentée dans le coin
+  haut droit du plateau.
 - Les réglages vivent dans la classe `Settings` (`Settings.kt`) : un état Compose
   adossé à des `SharedPreferences` (fichier `settings`), donc conservé d'un lancement
   à l'autre.

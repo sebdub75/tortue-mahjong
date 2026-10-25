@@ -22,9 +22,9 @@ un Mahjong à plusieurs joueurs.
   `node art/icone/generer.js` (voir [0006](docs/decisions/0006-icone-application.md))
 - Règles : `core/` (`Face`, `Board`, `Layouts`, `Dealer`, `Game`), coordonnées en demi-tuiles ;
   tests : `./gradlew :core:test`
-- Annulation : `Game` garde la pile des plateaux précédents
+- Annulation : bouton flèche de retour ; `Game` garde la pile des plateaux précédents
   (voir [0007](docs/decisions/0007-annulation-des-coups.md))
-- Options : panneau `OptionsPanel` par-dessus le plateau, réglages dans `Settings`
+- Options : roue dentée en haut à droite, panneau `OptionsPanel` par-dessus le plateau, réglages dans `Settings`
   (`SharedPreferences`) (voir [0008](docs/decisions/0008-ecran-options.md)) ; en bas,
   marque du build (`BuildConfig.BUILD_MARK` : commit, « + » si modifié, heure) pour
   reconnaître l'APK installé
@@ -38,12 +38,16 @@ un Mahjong à plusieurs joueurs.
   parmi des graines calculées à l'avance (`ExpertSeeds`, `ExpertSeedList.kt` généré par
   `poc/donnes-expert/generer.sh`), servie par `Dealer.dealExpert` (voir
   [0014](docs/decisions/0014-mode-expert.md))
-- Aide : bouton « Aide » qui montre en bleu, appui après appui, chaque paire de
+- Aide : bouton loupe qui montre en bleu, appui après appui, chaque paire de
   `Board.playablePairs(first)` (groupées par motif, celles de la tuile sélectionnée
   d'abord), rang dans `GameState.hint` (voir
   [0011](docs/decisions/0011-aide-coups-possibles.md))
 - Sauvegarde : `SavedGame` enregistre à chaque coup `Game.encode()` (donne + coups),
   reprise au lancement par `Game.decode()` (voir
   [0012](docs/decisions/0012-sauvegarde-de-la-partie.md))
+- Police : agrandissement du système plafonné à 1,3 (`MAX_FONT_SCALE` dans
+  `MainActivity`) pour que la colonne de commandes tienne en hauteur ; Options,
+  Annuler et Aide en icônes vectorielles (`IconButton`) (voir
+  [0015](docs/decisions/0015-taille-de-police.md))
 
 Documentation rédigée en français.
