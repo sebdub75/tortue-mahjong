@@ -95,6 +95,49 @@ class DealerTest {
         for (face in faces) assertEquals("$face", 0, faces.count { it.matches(face) } % 2)
     }
 
+    @Test
+    fun `un tirage soluble occupe la tortue avec le jeu complet et sa solution la vide`() {
+        for (seed in 0 until 20) {
+            val deal = Dealer.dealSolvable(Layouts.TURTLE, Random(seed))
+            assertEquals(Layouts.TURTLE.positions.toSet(), deal.board.tiles.keys)
+            assertEquals(
+                Face.fullSet().groupingBy { it }.eachCount(),
+                deal.board.tiles.values.groupingBy { it }.eachCount(),
+            )
+            assertSolvedBy(deal)
+        }
+    }
+
+    @Test
+    fun `un tirage soluble dépend de la graine`() {
+        assertEquals(
+            Dealer.dealSolvable(Layouts.TURTLE, Random(42)).board.tiles,
+            Dealer.dealSolvable(Layouts.TURTLE, Random(42)).board.tiles,
+        )
+        assertNotEquals(
+            Dealer.dealSolvable(Layouts.TURTLE, Random(1)).board.tiles,
+            Dealer.dealSolvable(Layouts.TURTLE, Random(2)).board.tiles,
+        )
+    }
+
+    @Test
+    fun `un tirage soluble écarte les tirages que le solveur ne vide pas`() {
+        // Graines dont le premier tirage est insoluble ou non résolu dans le budget : la
+        // donne retenue n'est pas ce premier tirage.
+        val rejected = (0 until 50).first { seed ->
+            Solver(Dealer.dealRandom(Layouts.TURTLE, Random(seed)), Dealer.SOLVER_BUDGET).solve() !is Solution.Found
+        }
+        assertNotEquals(
+            Dealer.dealRandom(Layouts.TURTLE, Random(rejected)).tiles,
+            Dealer.dealSolvable(Layouts.TURTLE, Random(rejected)).board.tiles,
+        )
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `un tirage soluble refuse une disposition impossible à vider`() {
+        Dealer.dealSolvable(Layout("Pile", listOf(Position(0, 0, 0), Position(0, 0, 1))), Random(0))
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun `un tirage au hasard refuse un nombre impair de positions`() {
         Dealer.dealRandom(Layout("Impair", listOf(Position(0, 0, 0))), Random(0))

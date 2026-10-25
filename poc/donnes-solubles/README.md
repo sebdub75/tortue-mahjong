@@ -1,7 +1,7 @@
 # Étude de faisabilité : des donnes solubles en mode difficile
 
 - **Date** : 2026-10-24
-- **Statut** : terminée ; conclusion favorable
+- **Statut** : terminée ; conclusion favorable, intégrée (voir [0013](../../docs/decisions/0013-solution-garantie.md))
 
 ## Ce que l'on cherche à montrer
 

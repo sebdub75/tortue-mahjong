@@ -6,7 +6,8 @@ import kotlin.random.Random
 class Deal(val board: Board, val solution: List<Pair<Position, Position>>)
 
 /**
- * Distribue les donnes : toujours solubles avec [deal], au hasard avec [dealRandom].
+ * Distribue les donnes : toujours solubles avec [deal], au hasard avec [dealRandom], au
+ * hasard mais vérifiées par le solveur avec [dealSolvable].
  *
  * On simule d'abord une partie sur la disposition seule, sans les faces : à chaque tour,
  * deux positions libres tirées au hasard sont retirées. Si l'on se retrouve avec moins de
@@ -16,6 +17,12 @@ class Deal(val board: Board, val solution: List<Pair<Position, Position>>)
 object Dealer {
 
     private const val MAX_ATTEMPTS = 1000
+
+    /**
+     * Plateaux que [Solver] peut visiter pour chaque tirage de [dealSolvable] : environ
+     * 70 % des tirages sont gardés, en ~33 ms par donne sur PC (poc/donnes-solubles).
+     */
+    const val SOLVER_BUDGET = 50_000
 
     fun deal(layout: Layout, random: Random): Deal {
         val positions = layout.positions
@@ -48,6 +55,20 @@ object Dealer {
             .flatMap { listOf(it.first, it.second) }
             .shuffled(random)
         return Board(positions.zip(faces).toMap())
+    }
+
+    /**
+     * Tire des donnes au hasard comme [dealRandom] et garde la première que [Solver] vide
+     * en [SOLVER_BUDGET] plateaux au plus : la donne reste piégeuse, mais jamais perdue
+     * d'avance. Plusieurs dizaines de millisecondes : à appeler hors du thread UI.
+     */
+    fun dealSolvable(layout: Layout, random: Random): Deal {
+        repeat(MAX_ATTEMPTS) {
+            val board = dealRandom(layout, random)
+            val solution = Solver(board, SOLVER_BUDGET).solve()
+            if (solution is Solution.Found) return Deal(board, solution.moves)
+        }
+        throw IllegalArgumentException("Aucune donne soluble trouvée pour « ${layout.name} »")
     }
 
     private fun checkSize(positions: List<Position>) {

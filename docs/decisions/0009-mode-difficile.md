@@ -1,7 +1,7 @@
 # 0009 — Mode difficile : donne tirée au hasard
 
 - **Date** : 2026-10-22
-- **Statut** : accepté
+- **Statut** : accepté ; modifié par [0013](0013-solution-garantie.md) (solution garantie)
 
 ## Contexte
 

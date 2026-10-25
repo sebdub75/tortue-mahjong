@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +50,9 @@ import name.dubourg.mahjong.core.Face
 import name.dubourg.mahjong.core.Game
 import name.dubourg.mahjong.core.Layouts
 import name.dubourg.mahjong.core.Position
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -59,10 +63,10 @@ internal val TextColor = Color(0xFFF1ECE2)
 internal val ButtonColor = Color(0x33FFFFFF)
 
 /**
- * Partie en cours, distribuée en mode difficile ou non, avec son historique, la tuile
- * sélectionnée et le rang de la paire montrée par l'aide.
+ * Partie en cours, avec le mode dans lequel elle a été distribuée, son historique, la
+ * tuile sélectionnée et le rang de la paire montrée par l'aide.
  */
-private class GameState(game: Game, val hard: Boolean) {
+private class GameState(game: Game, val mode: Mode) {
     var game by mutableStateOf(game)
         private set
     var selected by mutableStateOf<Position?>(null)
@@ -112,16 +116,21 @@ private class GameState(game: Game, val hard: Boolean) {
     }
 }
 
-/** Nouvelle donne : soluble, ou tirée au hasard en mode difficile. */
-private fun newGame(hard: Boolean) = GameState(
+/**
+ * Nouvelle donne : construite soluble en mode normal, tirée au hasard en mode difficile,
+ * puis vérifiée par le solveur si la solution est garantie. Ce dernier cas prend
+ * plusieurs dizaines de millisecondes.
+ */
+private fun newGame(mode: Mode) = GameState(
     Game(
-        if (hard) Dealer.dealRandom(Layouts.TURTLE, Random.Default)
-        else Dealer.deal(Layouts.TURTLE, Random.Default).board,
+        when (mode) {
+            Mode.NORMAL -> Dealer.deal(Layouts.TURTLE, Random.Default).board
+            Mode.HARD -> Dealer.dealSolvable(Layouts.TURTLE, Random.Default).board
+            Mode.HARD_UNCHECKED -> Dealer.dealRandom(Layouts.TURTLE, Random.Default)
+        },
     ),
-    hard,
+    mode,
 )
-
-private fun modeName(hard: Boolean) = if (hard) "difficile" else "normal"
 
 /** Taille des tuiles et position du plateau, pour qu'il tienne centré dans [canvas]. */
 private class BoardLayout(positions: Collection<Position>, canvas: Size) {
@@ -159,12 +168,26 @@ fun GameScreen() {
     val saved = remember { SavedGame(context.applicationContext) }
     // Changer de mode ne touche pas la partie en cours : à la sortie des options, on
     // propose une nouvelle donne ; si le joueur la refuse, le mode vaut pour la suivante.
+    // Sans sauvegarde (premier lancement), la donne est distribuée sur place : le mode est
+    // alors normal, sauf sauvegarde illisible.
     var game by remember {
-        mutableStateOf(saved.load()?.let { (g, hard) -> GameState(g, hard) } ?: newGame(settings.hard))
+        mutableStateOf(saved.load()?.let { (g, mode) -> GameState(g, mode) } ?: newGame(settings.mode))
     }
     // Enregistrement à chaque coup, annulation ou nouvelle donne : rien n'est perdu si
     // l'activité est recréée ou l'appli arrêtée.
-    LaunchedEffect(game, game.game) { saved.save(game.game, game.hard) }
+    LaunchedEffect(game, game.game) { saved.save(game.game, game.mode) }
+    // Le solveur tourne hors du thread UI ; un voile couvre l'écran le temps de la donne.
+    val scope = rememberCoroutineScope()
+    var dealing by remember { mutableStateOf(false) }
+    fun deal() {
+        if (dealing) return
+        val mode = settings.mode
+        dealing = true
+        scope.launch {
+            game = withContext(Dispatchers.Default) { newGame(mode) }
+            dealing = false
+        }
+    }
     var showOptions by remember { mutableStateOf(false) }
     var offerNewDeal by remember { mutableStateOf(false) }
     var confirmNewDeal by remember { mutableStateOf(false) }
@@ -193,10 +216,10 @@ fun GameScreen() {
             ) {
                 Label("Tuiles\n${board.tiles.size}")
                 Label("Paires jouables\n$pairs")
-                Label("Mode\n${modeName(game.hard).replaceFirstChar { it.uppercase() }}")
+                Label("Mode\n${game.mode.label.replaceFirstChar { it.uppercase() }}")
                 // Tortue vide : rien à perdre, la nouvelle donne se passe de confirmation.
                 ActionButton("Nouvelle donne") {
-                    if (board.tiles.isEmpty()) game = newGame(settings.hard) else confirmNewDeal = true
+                    if (board.tiles.isEmpty()) deal() else confirmNewDeal = true
                 }
                 ActionButton("Annuler", enabled = game.canUndo) { game.undo() }
                 ActionButton(game.hint?.let { "Aide ${it + 1}/$pairs" } ?: "Aide", enabled = pairs > 0) {
@@ -226,7 +249,7 @@ fun GameScreen() {
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     // Bloqué : revenir en arrière vaut souvent mieux que tout recommencer.
                     if (board.tiles.isNotEmpty()) ActionButton("Annuler") { game.undo() }
-                    ActionButton("Nouvelle donne") { game = newGame(settings.hard) }
+                    ActionButton("Nouvelle donne") { deal() }
                 }
             }
         }
@@ -240,7 +263,7 @@ fun GameScreen() {
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     ActionButton("Continuer la partie") { confirmNewDeal = false }
                     ActionButton("Nouvelle donne") {
-                        game = newGame(settings.hard)
+                        deal()
                         confirmNewDeal = false
                     }
                 }
@@ -249,22 +272,28 @@ fun GameScreen() {
 
         if (showOptions) OptionsPanel(settings) {
             showOptions = false
-            offerNewDeal = settings.hard != game.hard
+            offerNewDeal = settings.mode != game.mode
         }
 
         if (offerNewDeal) {
             ModalPanel(onDismiss = { offerNewDeal = false }) {
                 BasicText(
-                    "Vous êtes passé en mode ${modeName(settings.hard)}.\nSouhaitez-vous une nouvelle donne ?",
+                    "Vous êtes passé en mode ${settings.mode.label}.\nSouhaitez-vous une nouvelle donne ?",
                     style = TextStyle(TextColor, 22.sp, FontWeight.Bold, textAlign = TextAlign.Center),
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     ActionButton("Continuer la partie") { offerNewDeal = false }
                     ActionButton("Nouvelle donne") {
-                        game = newGame(settings.hard)
+                        deal()
                         offerNewDeal = false
                     }
                 }
+            }
+        }
+
+        if (dealing) {
+            ModalPanel(onDismiss = {}) {
+                BasicText("Distribution…", style = TextStyle(TextColor, 22.sp, FontWeight.Bold))
             }
         }
     }

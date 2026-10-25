@@ -26,8 +26,12 @@ un Mahjong à plusieurs joueurs.
   (voir [0007](docs/decisions/0007-annulation-des-coups.md))
 - Options : panneau `OptionsPanel` par-dessus le plateau, réglages dans `Settings`
   (`SharedPreferences`) (voir [0008](docs/decisions/0008-ecran-options.md))
-- Mode difficile : donne tirée au hasard par `Dealer.dealRandom`, sans garantie de
-  solution ; à la sortie des options, nouvelle donne proposée si le mode a changé (voir [0009](docs/decisions/0009-mode-difficile.md))
+- Mode difficile : donne tirée au hasard ; option « Solution garantie » (cochée par
+  défaut) qui ne garde que les tirages vidés par `Solver` (`Dealer.dealSolvable`,
+  calculé hors du thread UI), sinon `Dealer.dealRandom` ; trois modes dans `Mode` ; à
+  la sortie des options, nouvelle donne proposée si le mode a changé (voir
+  [0009](docs/decisions/0009-mode-difficile.md),
+  [0013](docs/decisions/0013-solution-garantie.md), étude `poc/donnes-solubles/`)
 - Aide : bouton « Aide » qui montre en bleu, appui après appui, chaque paire de
   `Board.playablePairs()` (groupées par motif), rang dans `GameState.hint` (voir
   [0011](docs/decisions/0011-aide-coups-possibles.md))

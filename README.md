@@ -30,10 +30,11 @@ Première version jouable : une donne de tortue, soluble en mode normal, en pays
 touche deux tuiles libres qui s'apparient pour les retirer ; les tuiles bloquées sont
 assombries. Compteurs de tuiles et de paires jouables, bouton « Nouvelle donne »,
 bouton « Annuler » qui défait les coups un à un jusqu'à la donne, message en fin de
-partie. Écran d'options avec une case « Difficile » : les donnes
-sont alors tirées au hasard, sans garantie d'être solubles. Bouton « Aide » qui
-montre, appui après appui, chacune des paires jouables.
-Pas encore de mélange ni de sauvegarde.
+partie. Écran d'options avec une case « Difficile » : les donnes sont alors tirées au
+hasard ; avec « Solution garantie », cochée par défaut, seules sont gardées celles
+qu'un solveur sait vider. Bouton « Aide » qui montre, appui après appui, chacune des
+paires jouables. La partie en cours est enregistrée à chaque coup.
+Pas encore de mélange.
 
 Les règles sont dans le module `:core`, testé avec JUnit (`./gradlew :core:test`).
 

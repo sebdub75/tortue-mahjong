@@ -30,7 +30,15 @@ import androidx.compose.ui.unit.sp
 fun OptionsPanel(settings: Settings, onClose: () -> Unit) {
     ModalPanel(onDismiss = onClose) {
         BasicText("Options", style = TextStyle(TextColor, 28.sp, FontWeight.Bold))
-        CheckOption("Difficile", settings.hard) { settings.hard = it }
+        Column {
+            CheckOption("Difficile", settings.hard) { settings.hard = it }
+            // Sans objet en mode normal : la donne y est toujours soluble.
+            if (settings.hard) {
+                CheckOption("Solution garantie", settings.guaranteed, Modifier.padding(start = 32.dp)) {
+                    settings.guaranteed = it
+                }
+            }
+        }
         ActionButton("Fermer", onClick = onClose)
     }
 }
@@ -63,9 +71,9 @@ internal fun ModalPanel(onDismiss: () -> Unit, content: @Composable ColumnScope.
 }
 
 @Composable
-private fun CheckOption(text: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+private fun CheckOption(text: String, checked: Boolean, modifier: Modifier = Modifier, onChange: (Boolean) -> Unit) {
     Row(
-        Modifier
+        modifier
             .clickable { onChange(!checked) }
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
