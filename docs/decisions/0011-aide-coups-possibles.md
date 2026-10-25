@@ -1,7 +1,7 @@
 # 0011 — Aide : parcourir les coups possibles
 
 - **Date** : 2026-10-23
-- **Statut** : accepté
+- **Statut** : accepté ; complété le 2026-10-25 (paires de la tuile sélectionnée d'abord)
 
 ## Contexte
 
@@ -22,16 +22,23 @@ paires jouables, et des appuis successifs les passent toutes en revue.
   (caractères, ronds, bambous, vents, dragons, fleurs, saisons). Fleurs et saisons
   s'apparient entre elles et forment donc chacune un seul groupe. Cet ordre est
   déterministe : une annulation rend la même liste.
+- Si une tuile est sélectionnée au premier appui, ses paires passent en tête
+  (`Board.playablePairs(first)`), les autres suivent dans l'ordre des motifs. L'ordre
+  est fixé à ce premier appui (`GameState.hintOrder`) : toucher ensuite une tuile
+  suggérée la sélectionne sans rebattre l'ordre.
 - Le rang de l'aide vit dans `GameState` (`hint`), pas dans `:core` : c'est un état
-  d'affichage. Il est remis à zéro à chaque coup joué ou annulé ; sélectionner une
-  tuile ne l'efface pas, pour qu'on puisse toucher les deux tuiles suggérées.
+  d'affichage. Il est remis à zéro à chaque coup joué ou annulé. Sélectionner une des
+  deux tuiles suggérées ne l'efface pas, pour qu'on puisse les toucher ; sélectionner
+  une autre tuile l'éteint, et le prochain appui repart des paires de cette tuile.
 
 ## Raisons
 
 - Grouper par motif rapproche les paires d'un même motif quand trois ou quatre
   exemplaires sont libres : on voit d'un coup d'œil toutes les combinaisons.
-- La liste est recalculée à chaque appui à partir du plateau : pas d'état à tenir à
-  jour en dehors du rang.
+- La liste est calculée au premier appui à partir du plateau et de la sélection, puis
+  gardée tant que l'aide reste allumée : le plateau ne change pas sans l'éteindre.
+- Sélectionner une tuile puis demander l'aide répond à la question « avec quoi
+  cette tuile peut-elle partir ? ».
 
 ## Conséquences
 

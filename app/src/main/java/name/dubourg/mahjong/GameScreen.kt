@@ -71,19 +71,26 @@ private class GameState(game: Game, val mode: Mode) {
         private set
     var selected by mutableStateOf<Position?>(null)
 
-    /** Rang, dans [Board.playablePairs], de la paire montrée par l'aide ; null sans aide. */
+    /** Rang, dans [hintOrder], de la paire montrée par l'aide ; null sans aide. */
     var hint by mutableStateOf<Int?>(null)
         private set
 
+    // Paires parcourues par l'aide, fixées au premier appui : toucher ensuite une tuile
+    // suggérée la sélectionne sans rebattre l'ordre en cours de route.
+    private var hintOrder = emptyList<Pair<Position, Position>>()
+
     val board: Board get() = game.board
     val canUndo: Boolean get() = game.canUndo
-    val hintPair: Pair<Position, Position>? get() = hint?.let { board.playablePairs().getOrNull(it) }
+    val hintPair: Pair<Position, Position>? get() = hint?.let { hintOrder.getOrNull(it) }
 
-    /** Montrer la paire jouable suivante, en revenant à la première après la dernière. */
+    /**
+     * Montrer la paire jouable suivante, en revenant à la première après la dernière. Au
+     * premier appui, les paires de la tuile sélectionnée passent en tête.
+     */
     fun nextHint() {
-        val count = board.playablePairs().size
-        if (count == 0) return
-        hint = ((hint ?: -1) + 1) % count
+        if (hint == null) hintOrder = board.playablePairs(first = selected)
+        if (hintOrder.isEmpty()) return
+        hint = ((hint ?: -1) + 1) % hintOrder.size
     }
 
     /** Toucher le fond du plateau : abandonner la sélection et éteindre l'aide. */
@@ -92,7 +99,11 @@ private class GameState(game: Game, val mode: Mode) {
         hint = null
     }
 
-    /** Toucher une tuile : la sélectionner, ou retirer la paire si elle s'apparie. */
+    /**
+     * Toucher une tuile : la sélectionner, ou retirer la paire si elle s'apparie.
+     * Sélectionner une tuile hors de la paire suggérée éteint l'aide : au prochain appui,
+     * elle repartira des paires de cette tuile.
+     */
     fun tap(p: Position) {
         val current = selected
         when {
@@ -103,7 +114,11 @@ private class GameState(game: Game, val mode: Mode) {
                 selected = null
                 hint = null
             }
-            else -> selected = p
+            else -> {
+                selected = p
+                val shown = hintPair
+                if (shown != null && p != shown.first && p != shown.second) hint = null
+            }
         }
     }
 

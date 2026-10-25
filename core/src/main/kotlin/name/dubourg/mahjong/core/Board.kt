@@ -31,15 +31,19 @@ class Board(val tiles: Map<Position, Face>) {
 
     /**
      * Toutes les paires jouables, groupées par motif dans l'ordre du jeu (fleurs d'un
-     * seul tenant, saisons de même), puis dans l'ordre des tuiles du plateau.
+     * seul tenant, saisons de même), puis dans l'ordre des tuiles du plateau. Les paires
+     * qui contiennent [first], s'il est donné, passent en tête, dans ce même ordre.
      */
-    fun playablePairs(): List<Pair<Position, Position>> {
+    fun playablePairs(first: Position? = null): List<Pair<Position, Position>> {
         val free = tiles.keys.filter { isFree(it) }
         return free.indices.flatMap { i ->
             (i + 1 until free.size)
                 .filter { j -> tiles.getValue(free[i]).matches(tiles.getValue(free[j])) }
                 .map { j -> free[i] to free[j] }
-        }.sortedWith(compareBy({ tiles.getValue(it.first).suit }, { tiles.getValue(it.first).groupRank }))
+        }.sortedWith(
+            compareBy({ first == null || (it.first != first && it.second != first) },
+                { tiles.getValue(it.first).suit }, { tiles.getValue(it.first).groupRank }),
+        )
     }
 }
 

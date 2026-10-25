@@ -120,4 +120,29 @@ class BoardTest {
             start.playablePairs(),
         )
     }
+
+    @Test
+    fun `les paires d'une tuile donnée passent en tête, dans l'ordre des motifs`() {
+        val faces = listOf(
+            Face(Suit.FLOWER, 2), Face(Suit.DOTS, 3), Face(Suit.CHARACTERS, 5),
+            Face(Suit.FLOWER, 4), Face(Suit.DOTS, 3), Face(Suit.CHARACTERS, 5),
+            Face(Suit.FLOWER, 1), Face(Suit.CHARACTERS, 2), Face(Suit.CHARACTERS, 2),
+        )
+        val p = faces.indices.map { Position(it * 4, 0, 0) }
+        val start = Board(p.zip(faces).toMap())
+        assertEquals(
+            listOf(p[0] to p[6], p[3] to p[6], p[7] to p[8], p[2] to p[5], p[1] to p[4], p[0] to p[3]),
+            start.playablePairs(first = p[6]),
+        )
+    }
+
+    @Test
+    fun `une tuile sans paire jouable laisse l'ordre des motifs`() {
+        val a = Position(0, 0, 0)
+        val b = Position(4, 0, 0)
+        val c = Position(8, 0, 0)
+        val start = Board(mapOf(a to man1, b to Face(Suit.DOTS, 1), c to man1))
+        assertEquals(start.playablePairs(), start.playablePairs(first = b))
+        assertEquals(start.playablePairs(), start.playablePairs(first = null))
+    }
 }

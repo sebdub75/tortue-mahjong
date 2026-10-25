@@ -33,7 +33,8 @@ un Mahjong à plusieurs joueurs.
   [0009](docs/decisions/0009-mode-difficile.md),
   [0013](docs/decisions/0013-solution-garantie.md), étude `poc/donnes-solubles/`)
 - Aide : bouton « Aide » qui montre en bleu, appui après appui, chaque paire de
-  `Board.playablePairs()` (groupées par motif), rang dans `GameState.hint` (voir
+  `Board.playablePairs(first)` (groupées par motif, celles de la tuile sélectionnée
+  d'abord), rang dans `GameState.hint` (voir
   [0011](docs/decisions/0011-aide-coups-possibles.md))
 - Sauvegarde : `SavedGame` enregistre à chaque coup `Game.encode()` (donne + coups),
   reprise au lancement par `Game.decode()` (voir
