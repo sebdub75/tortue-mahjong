@@ -294,7 +294,7 @@ fun GameScreen() {
         if (offerNewDeal) {
             ModalPanel(onDismiss = { offerNewDeal = false }) {
                 BasicText(
-                    "Vous êtes passé en mode ${settings.mode.label}.\nSouhaitez-vous une nouvelle donne ?",
+                    "Vous êtes passé en mode ${settings.mode.description}.\nSouhaitez-vous une nouvelle donne ?",
                     style = TextStyle(TextColor, 22.sp, FontWeight.Bold, textAlign = TextAlign.Center),
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {

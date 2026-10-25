@@ -24,7 +24,10 @@ et ces donnes restent environ 4 fois plus piégeuses que les donnes normales.
 - Le mode d'une partie devient une énumération `Mode` : `NORMAL`, `HARD` (difficile,
   solution garantie), `HARD_UNCHECKED` (difficile sans garantie, le comportement de
   0009). `Settings.mode` donne celui des prochaines donnes ; la colonne de commandes
-  affiche celui de la partie en cours.
+  affiche celui de la partie en cours, par un libellé court (`Mode.label`) : « Facile »,
+  « Difficile » (avec ou sans garantie) ou « Expert ». Un libellé plus long ne tient
+  pas dans la colonne et pousse le bouton « Options » sous le bord de l'écran. La
+  question posée en sortant des options garde le libellé complet (`Mode.description`).
 - La donne garantie est calculée hors du thread UI (`Dispatchers.Default`). Un voile
   « Distribution… » couvre l'écran pendant le calcul et absorbe les touchers.
 - La question posée en sortant des options compare désormais les modes : passer de

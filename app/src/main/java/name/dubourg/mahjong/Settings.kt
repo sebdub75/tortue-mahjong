@@ -5,16 +5,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
-/** Mode de distribution d'une partie, tel qu'affiché au joueur. */
-enum class Mode(val label: String) {
+/**
+ * Mode de distribution d'une partie. [label], court, tient dans la colonne de commandes ;
+ * [description] précise le mode quand la place le permet.
+ */
+enum class Mode(val label: String, val description: String = label) {
     /** Donne construite soluble par `Dealer.deal`, très tolérante. */
-    NORMAL("normal"),
+    NORMAL("facile"),
 
     /** Donne au hasard dont le solveur a trouvé une solution (`Dealer.dealSolvable`). */
     HARD("difficile"),
 
     /** Donne au hasard sans vérification (`Dealer.dealRandom`) : peut être perdue d'avance. */
-    HARD_UNCHECKED("difficile sans garantie"),
+    HARD_UNCHECKED("difficile", "difficile sans garantie"),
 
     /** Donne soluble et très piégeuse, choisie à l'avance (`Dealer.dealExpert`). */
     EXPERT("expert"),
