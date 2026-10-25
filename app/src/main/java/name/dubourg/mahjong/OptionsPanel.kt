@@ -46,6 +46,11 @@ fun OptionsPanel(settings: Settings, onClose: () -> Unit) {
             }
         }
         ActionButton("Fermer", onClick = onClose)
+        // Pour reconnaître l'exécutable installé : version, commit et heure du build.
+        BasicText(
+            "Version ${BuildConfig.VERSION_NAME} · ${BuildConfig.BUILD_TYPE} · ${BuildConfig.BUILD_MARK}",
+            style = TextStyle(TextColor.copy(alpha = 0.6f), 12.sp),
+        )
     }
 }
 

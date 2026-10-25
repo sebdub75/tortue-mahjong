@@ -25,7 +25,9 @@ un Mahjong à plusieurs joueurs.
 - Annulation : `Game` garde la pile des plateaux précédents
   (voir [0007](docs/decisions/0007-annulation-des-coups.md))
 - Options : panneau `OptionsPanel` par-dessus le plateau, réglages dans `Settings`
-  (`SharedPreferences`) (voir [0008](docs/decisions/0008-ecran-options.md))
+  (`SharedPreferences`) (voir [0008](docs/decisions/0008-ecran-options.md)) ; en bas,
+  marque du build (`BuildConfig.BUILD_MARK` : commit, « + » si modifié, heure) pour
+  reconnaître l'APK installé
 - Mode difficile : donne tirée au hasard ; option « Solution garantie » (cochée par
   défaut) qui ne garde que les tirages vidés par `Solver` (`Dealer.dealSolvable`,
   calculé hors du thread UI), sinon `Dealer.dealRandom` ; quatre modes dans `Mode` ; à

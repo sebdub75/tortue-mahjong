@@ -1,7 +1,17 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
 }
+
+// Marque de construction, affichée au bas des options pour reconnaître l'exécutable :
+// commit d'origine (« + » si le répertoire de travail avait des modifications) et heure
+// du build, recalculée à chaque construction.
+fun git(vararg args: String) = providers.exec { commandLine("git", *args) }.standardOutput.asText.get().trim()
+val buildMark = "${git("rev-parse", "--short", "HEAD")}${if (git("status", "--porcelain").isEmpty()) "" else "+"} · " +
+    LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
 
 android {
     namespace = "name.dubourg.mahjong"
@@ -15,6 +25,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "0.1"
+        buildConfigField("String", "BUILD_MARK", "\"$buildMark\"")
     }
 
     compileOptions {
@@ -23,6 +34,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
