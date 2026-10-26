@@ -31,6 +31,7 @@ fun OptionsPanel(settings: Settings, onClose: () -> Unit) {
     ModalPanel(onDismiss = onClose) {
         BasicText("Options", style = TextStyle(TextColor, 28.sp, FontWeight.Bold))
         Column {
+            CheckOption("Fond uni", settings.plainTable) { settings.plainTable = it }
             CheckOption("Difficile", settings.hard) { settings.hard = it }
             // Sans objet en mode normal : la donne y est toujours soluble.
             if (settings.hard) {

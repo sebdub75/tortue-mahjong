@@ -14,7 +14,9 @@ un Mahjong à plusieurs joueurs.
   [0002](docs/decisions/0002-tuiles-fluffystuff.md),
   [0010](docs/decisions/0010-fleurs-saisons-illustrees.md))
 - Rendu : fausse 3D en perspective cavalière dans le `Canvas`, `app/.../TileRenderer.kt`
-  (voir [0003](docs/decisions/0003-rendu-tuiles-en-relief.md)) ; démo : `./demo.sh`
+  (voir [0003](docs/decisions/0003-rendu-tuiles-en-relief.md)) ; démo : `./demo.sh` ;
+  tapis en dégradé radial, uni avec l'option « Fond uni » pour les écrans e-ink (voir
+  [0016](docs/decisions/0016-option-fond-uni.md))
 - Application en paysage (voir [0004](docs/decisions/0004-orientation-paysage.md))
 - Composition du jeu : celle de *Mahjong HD*, vents, fleurs et saisons en 2 exemplaires
   (voir [0005](docs/decisions/0005-composition-du-jeu.md))

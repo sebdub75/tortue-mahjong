@@ -29,6 +29,7 @@ class Settings(context: Context) {
     private var hardState by mutableStateOf(prefs.getBoolean(KEY_HARD, false))
     private var guaranteedState by mutableStateOf(prefs.getBoolean(KEY_GUARANTEED, true))
     private var expertState by mutableStateOf(prefs.getBoolean(KEY_EXPERT, false))
+    private var plainTableState by mutableStateOf(prefs.getBoolean(KEY_PLAIN_TABLE, false))
 
     /** Mode difficile : donne tirée au hasard. */
     var hard: Boolean
@@ -54,6 +55,14 @@ class Settings(context: Context) {
             prefs.edit().putBoolean(KEY_EXPERT, value).apply()
         }
 
+    /** Tapis d'une couleur unie au lieu du dégradé, qui fait des anneaux sur un écran e-ink. */
+    var plainTable: Boolean
+        get() = plainTableState
+        set(value) {
+            plainTableState = value
+            prefs.edit().putBoolean(KEY_PLAIN_TABLE, value).apply()
+        }
+
     /** Mode des prochaines donnes. */
     val mode: Mode
         get() = when {
@@ -67,5 +76,6 @@ class Settings(context: Context) {
         const val KEY_HARD = "hard"
         const val KEY_GUARANTEED = "guaranteed"
         const val KEY_EXPERT = "expert"
+        const val KEY_PLAIN_TABLE = "plainTable"
     }
 }

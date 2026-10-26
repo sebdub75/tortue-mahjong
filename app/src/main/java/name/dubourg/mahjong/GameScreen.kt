@@ -33,6 +33,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -223,7 +224,11 @@ fun GameScreen() {
     Box(
         Modifier
             .fillMaxSize()
-            .background(Brush.radialGradient(listOf(Color(0xFF2B6E55), Color(0xFF0D2B21)), radius = 2600f)),
+            // Le dégradé fait des anneaux sur les écrans e-ink : option « Fond uni » (voir 0016).
+            .background(
+                if (settings.plainTable) SolidColor(Color(0xFF1F5443))
+                else Brush.radialGradient(listOf(Color(0xFF2B6E55), Color(0xFF0D2B21)), radius = 2600f),
+            ),
     ) {
         Row(Modifier.fillMaxSize().safeDrawingPadding()) {
             // Le plateau est limité par la hauteur : les commandes prennent place à gauche.
