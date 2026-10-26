@@ -56,4 +56,10 @@ un Mahjong à plusieurs joueurs.
   `res/values-fr/strings.xml` (français), jamais en dur dans le code ; compteurs en
   `<plurals>` (voir [0017](docs/decisions/0017-anglais-par-defaut.md))
 
+- Licence : GPL-3.0-or-later (`LICENSE`), crédits des composants tiers dans le README
+  (voir [0018](docs/decisions/0018-licence-gpl.md))
+- Publication : GitHub Actions, tests et APK debug à chaque poussée (`build.yml`), APK
+  signé par `apk.sh` déposé en release à chaque étiquette `vX.Y` (`release.yml`) (voir
+  [0019](docs/decisions/0019-publication-github-actions.md))
+
 Documentation rédigée en français.

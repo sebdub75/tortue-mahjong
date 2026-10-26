@@ -47,3 +47,41 @@ release signée. Au premier lancement, la clé est créée dans
 `~/.android/mahjong-release.jks`, avec un mot de passe aléatoire dans
 `~/.android/mahjong-release.pass` (lisibles par vous seul). Sauvegarder ces deux
 fichiers : sans eux, une nouvelle version ne s'installe plus par-dessus l'ancienne.
+
+## Publication
+
+GitHub Actions lance les tests et construit l'APK debug à chaque poussée sur `main`
+(`.github/workflows/build.yml`). Pour publier une version :
+
+1. augmenter `versionCode` et `versionName` dans `app/build.gradle.kts` ;
+2. poser et pousser l'étiquette correspondante : `git tag v0.2 && git push origin v0.2`.
+
+Le workflow `release.yml` vérifie que l'étiquette correspond à `versionName`, signe
+l'APK avec `apk.sh` et le dépose dans une release GitHub. Il lui faut deux secrets du
+dépôt : `MAHJONG_KEYSTORE_BASE64` (sortie de `base64 -w0 ~/.android/mahjong-release.jks`)
+et `MAHJONG_KEYSTORE_PASS` (contenu de `~/.android/mahjong-release.pass`). Voir
+[0019](docs/decisions/0019-publication-github-actions.md).
+
+## Licence
+
+Le code et les illustrations propres au projet sont distribués sous **licence publique
+générale GNU, version 3 ou toute version ultérieure** (GPL-3.0-or-later) : texte complet
+dans [LICENSE](LICENSE). Voir [0018](docs/decisions/0018-licence-gpl.md).
+
+## Crédits
+
+- **Tuiles** : jeu [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles)
+  de FluffyStuff, versé au domaine public (CC0 1.0). Fichiers copiés sans modification
+  dans `art/tiles/fluffystuff/`.
+- **Fleurs, saisons et icône** : dessinées pour le projet, dans le style FluffyStuff,
+  par `art/tiles/fleurs-saisons/generer.js` et `art/icone/generer.js`.
+- **Bibliothèques** : [Kotlin](https://kotlinlang.org/),
+  [Jetpack Compose et AndroidX](https://developer.android.com/jetpack) (Apache 2.0) ;
+  tests avec [JUnit 4](https://junit.org/junit4/) (EPL 1.0).
+- **Conversion des tuiles en VectorDrawable** (outils de développement, absents de
+  l'APK) : [svg2vectordrawable](https://github.com/Ashung/svg2vectordrawable) d'Ashung
+  Hung (MIT), [svgpath](https://github.com/fontello/svgpath) (MIT),
+  [svg-path-properties](https://github.com/rveciana/svg-path-properties) de Roger
+  Veciana i Rovira (ISC), [@xmldom/xmldom](https://github.com/xmldom/xmldom) (MIT).
+- **Inspiration** : *Mahjong HD*, dont le projet reprend la disposition et la
+  composition du jeu. Projet indépendant, sans lien avec les auteurs de *Mahjong HD*.
