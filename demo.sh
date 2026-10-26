@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # Construit la maquette, démarre un émulateur si aucun appareil n'est branché,
-# installe l'application et la lance.
+# installe l'application et la lance dans la langue demandée.
 #
-# Usage : ./demo.sh [AVD]      (AVD par défaut : Pixel_8)
+# Usage : [LANGUE=fr|en|…|systeme] ./demo.sh [AVD]      (AVD par défaut : Pixel_8)
+#
+# LANGUE fixe la langue de l'application seule, sans toucher à celle du téléphone
+# (Android 13 et plus) : fr par défaut, « systeme » pour suivre le téléphone.
 set -euo pipefail
 
 cd "$(dirname "$0")"
 
 AVD="${1:-Pixel_8}"
+LANGUE="${LANGUE:-fr}"
+[ "$LANGUE" = systeme ] && LANGUE=""
 PACKAGE=name.dubourg.mahjong
 APK=app/build/outputs/apk/debug/app-debug.apk
 
@@ -37,6 +42,10 @@ if ! "$ADB" install -r "$APK" 2>&1 | tee /dev/stderr | grep -q '^Success'; then
     "$ADB" uninstall "$PACKAGE" >/dev/null || true
     "$ADB" install "$APK"
 fi
+
+echo "== Langue : ${LANGUE:-celle du téléphone}"
+"$ADB" shell cmd locale set-app-locales "$PACKAGE" --locales "'$LANGUE'" \
+    || echo "Langue non appliquée (Android 13 ou plus requis)"
 
 echo "== Lancement"
 "$ADB" shell am start -n "$PACKAGE/.MainActivity" >/dev/null
