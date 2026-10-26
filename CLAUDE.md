@@ -4,7 +4,7 @@ Jeu de Mahjong solitaire à un joueur, façon *Mahjong HD* : pyramide « tortue 
 tuiles sur 5 niveaux, on retire des paires de tuiles identiques et libres. Ce n'est pas
 un Mahjong à plusieurs joueurs.
 
-- Objectif et règles : [README.md](README.md)
+- Objectif et règles : [README.fr.md](README.fr.md) (anglais : [README.md](README.md))
 - Décisions d'architecture : `docs/decisions/` (une fiche numérotée par décision ; en
   ajouter une pour chaque choix structurant)
 - Technologie : Kotlin + Jetpack Compose, règles dans un module `:core` en Kotlin pur
@@ -56,10 +56,13 @@ un Mahjong à plusieurs joueurs.
   `res/values-fr/strings.xml` (français), jamais en dur dans le code ; compteurs en
   `<plurals>` (voir [0017](docs/decisions/0017-anglais-par-defaut.md))
 
-- Licence : GPL-3.0-or-later (`LICENSE`), crédits des composants tiers dans le README
-  (voir [0018](docs/decisions/0018-licence-gpl.md))
+- Licence : GPL-3.0-or-later (`LICENSE`), crédits des composants tiers dans les deux
+  README (voir [0018](docs/decisions/0018-licence-gpl.md))
 - Publication : GitHub Actions, tests et APK debug à chaque poussée (`build.yml`), APK
   signé par `apk.sh` déposé en release à chaque étiquette `vX.Y` (`release.yml`) (voir
   [0019](docs/decisions/0019-publication-github-actions.md))
 
-Documentation rédigée en français.
+Documentation rédigée en français, sauf `README.md`, en anglais : c'est la page
+d'accueil du dépôt. `README.fr.md` est la version française complète ; `README.md` en
+reprend la partie utile aux joueurs (esprit du projet, règles, installation, licence,
+crédits). Toute modification de ces sujets touche les deux fichiers.

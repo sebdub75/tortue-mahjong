@@ -28,7 +28,8 @@ projet (fleurs, saisons, icône).
 
 ## Conséquences
 
-- Les crédits des composants tiers sont tenus dans la section « Crédits » du README.
+- Les crédits des composants tiers sont tenus dans la section « Crédits » des deux
+  README (`README.md`, `README.fr.md`).
 - Une contribution extérieure est reçue sous la même licence.
 - Les tuiles FluffyStuff restent CC0 : leur licence propre est dans
   `art/tiles/fluffystuff/LICENSE.md`.

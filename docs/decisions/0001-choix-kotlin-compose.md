@@ -5,7 +5,7 @@
 
 ## Contexte
 
-Le jeu est un Mahjong solitaire à un joueur (voir le [README](../../README.md)) : une
+Le jeu est un Mahjong solitaire à un joueur (voir le [README](../../README.fr.md)) : une
 pyramide de 144 tuiles sur 5 niveaux, dont on retire des paires identiques et libres.
 Techniquement, c'est un jeu 2D sans temps réel ni physique : des sprites statiques, deux
 touchers pour former une paire, une animation de disparition.

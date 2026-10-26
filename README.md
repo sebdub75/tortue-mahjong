@@ -1,108 +1,75 @@
 # Tortue Mahjong — Mahjong solitaire (Android)
 
-Jeu de Mahjong solitaire pour Android, à un seul joueur, dans l'esprit de *Mahjong HD*.
+**English** | [Français](README.fr.md)
 
-## Esprit du projet
+A single-player Mahjong solitaire game for Android, in the spirit of *Mahjong HD*.
 
-Tortue Mahjong veut rester **simple** : une seule disposition, la tortue, et peu
-d'options. Pour un jeu plus complet (nombreuses dispositions, thèmes, défis…),
-*Mahjong HD* est recommandé.
+## Philosophy
 
-Son originalité tient à son **solveur**, qui cherche une solution à chaque donne :
+Tortue Mahjong aims to stay **simple**: a single layout, the turtle, and few options.
+If you are looking for a more complete game (many layouts, themes, challenges…),
+*Mahjong HD* is recommended.
 
-- **Solution garantie, même au hasard** : en mode difficile, la tortue est tirée
-  vraiment au hasard, et non construite à rebours comme les donnes faciles, ce qui
-  donne des parties bien plus piégeuses. Le solveur ne garde que les tirages qu'il sait
-  vider. Si l'on se retrouve bloqué, c'est qu'on s'est piégé, pas que la donne était
-  perdue d'avance, et « Annuler » permet de retrouver le bon chemin.
-- **Mode expert, difficile mais soluble** : des donnes choisies à l'avance parmi des
-  milliers de tirages, toutes solubles, mais qu'un joueur jouant au hasard ne gagne
-  qu'une fois sur cent au plus. Elles sont environ neuf fois plus dures que celles du
-  mode difficile.
+What sets it apart is its **solver**, which looks for a solution to every deal:
 
-Détails : [0013](docs/decisions/0013-solution-garantie.md) et
-[0014](docs/decisions/0014-mode-expert.md).
+- **Guaranteed solution, even for random deals**: in hard mode, the turtle is dealt
+  truly at random, rather than built from a valid removal order like easy deals, which
+  makes for much trickier games. The solver keeps only the deals it can clear. If you
+  get stuck, you trapped yourself — the deal was not lost from the start — and Undo
+  lets you find your way back.
+- **Expert mode, hard but solvable**: deals picked in advance from thousands of random
+  ones, all solvable, yet won at most once in a hundred games by a player making random
+  moves. They are about nine times harder than hard-mode deals.
 
-## Principe du jeu
+## How to play
 
-- Les 144 tuiles sont empilées selon la disposition classique « tortue » : une pyramide
-  sur 5 niveaux.
-- Le joueur retire des **paires de tuiles identiques** jusqu'à vider le plateau.
-  Deux fleurs quelconques s'apparient, de même deux saisons.
-- Composition du jeu, comme dans *Mahjong HD* : caractères, cercles et bambous (1 à 9)
-  et dragons en 4 exemplaires ; vents, fleurs et saisons en 2 exemplaires. Chaque vent
-  n'a donc qu'une seule partenaire. Voir
-  [0005](docs/decisions/0005-composition-du-jeu.md).
-- Une tuile ne peut être jouée que si elle est **libre** :
-  - aucune tuile n'est posée dessus ;
-  - son côté gauche **ou** son côté droit est dégagé.
-- La partie est gagnée quand le plateau est vide, perdue quand plus aucune paire libre
-  n'est disponible.
+- The 144 tiles are stacked in the classic "turtle" layout: a five-level pyramid.
+- Remove **pairs of identical tiles** until the board is empty. Any two flowers make a
+  pair, and so do any two seasons.
+- Tile set, as in *Mahjong HD*: characters, circles and bamboos (1 to 9) and dragons in
+  4 copies; winds, flowers and seasons in 2 copies. Each wind therefore has a single
+  partner.
+- A tile can only be played if it is **free**:
+  - no tile lies on top of it;
+  - its left **or** right side is clear.
+- You win when the board is empty, and lose when no free pair is left.
 
-## Technologie retenue
+Blocked tiles are dimmed. The magnifier button shows the playable pairs one after
+another, the arrow button undoes moves, and the game is saved after every move. The
+interface is in English and French.
 
-**Kotlin + Jetpack Compose**, avec le plateau dessiné dans un `Canvas`.
+## Installation
 
-Détail et alternatives écartées : [docs/decisions/0001-choix-kotlin-compose.md](docs/decisions/0001-choix-kotlin-compose.md).
+Download the latest APK from the [Releases](../../releases) page and open it on your
+phone (Android 8.0 or later). You may need to allow installing apps from your browser
+or file manager.
 
-## État
+## Building
 
-Première version jouable : une donne de tortue, soluble en mode normal, en paysage. On
-touche deux tuiles libres qui s'apparient pour les retirer ; les tuiles bloquées sont
-assombries. Compteurs de tuiles et de paires jouables, bouton « Nouvelle donne »,
-bouton « Annuler » qui défait les coups un à un jusqu'à la donne, message en fin de
-partie. Écran d'options avec une case « Difficile » : les donnes sont alors tirées au
-hasard ; avec « Solution garantie », cochée par défaut, seules sont gardées celles
-qu'un solveur sait vider ; avec « Difficulté garantie », les donnes sont prises parmi
-des tortues solubles et très piégeuses choisies à l'avance. Bouton « Aide » qui montre,
-appui après appui, chacune des paires jouables. La partie en cours est enregistrée à chaque coup.
-Pas encore de mélange.
+Kotlin and Jetpack Compose. Run the rules tests with `./gradlew :core:test`, and build
+a signed release APK with `./apk.sh`. Developer notes and design decisions are in
+French: see [README.fr.md](README.fr.md) and [docs/decisions/](docs/decisions/).
 
-Les règles sont dans le module `:core`, testé avec JUnit (`./gradlew :core:test`).
+## License
 
-Lancer la démo : `./demo.sh` construit l'application, démarre l'émulateur `Pixel_8` (ou
-celui passé en argument) si aucun appareil n'est branché, puis installe et lance l'app.
+The code and the artwork made for the project are released under the **GNU General
+Public License, version 3 or any later version** (GPL-3.0-or-later): full text in
+[LICENSE](LICENSE).
 
-APK pour un téléphone : `./apk.sh` produit `dist/mahjong-<version>.apk`, en version
-release signée. Au premier lancement, la clé est créée dans
-`~/.android/mahjong-release.jks`, avec un mot de passe aléatoire dans
-`~/.android/mahjong-release.pass` (lisibles par vous seul). Sauvegarder ces deux
-fichiers : sans eux, une nouvelle version ne s'installe plus par-dessus l'ancienne.
+## Credits
 
-## Publication
-
-GitHub Actions lance les tests et construit l'APK debug à chaque poussée sur `main`
-(`.github/workflows/build.yml`). Pour publier une version :
-
-1. augmenter `versionCode` et `versionName` dans `app/build.gradle.kts` ;
-2. poser et pousser l'étiquette correspondante : `git tag v0.2 && git push origin v0.2`.
-
-Le workflow `release.yml` vérifie que l'étiquette correspond à `versionName`, signe
-l'APK avec `apk.sh` et le dépose dans une release GitHub. Il lui faut deux secrets du
-dépôt : `MAHJONG_KEYSTORE_BASE64` (sortie de `base64 -w0 ~/.android/mahjong-release.jks`)
-et `MAHJONG_KEYSTORE_PASS` (contenu de `~/.android/mahjong-release.pass`). Voir
-[0019](docs/decisions/0019-publication-github-actions.md).
-
-## Licence
-
-Le code et les illustrations propres au projet sont distribués sous **licence publique
-générale GNU, version 3 ou toute version ultérieure** (GPL-3.0-or-later) : texte complet
-dans [LICENSE](LICENSE). Voir [0018](docs/decisions/0018-licence-gpl.md).
-
-## Crédits
-
-- **Tuiles** : jeu [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles)
-  de FluffyStuff, versé au domaine public (CC0 1.0). Fichiers copiés sans modification
-  dans `art/tiles/fluffystuff/`.
-- **Fleurs, saisons et icône** : dessinées pour le projet, dans le style FluffyStuff,
-  par `art/tiles/fleurs-saisons/generer.js` et `art/icone/generer.js`.
-- **Bibliothèques** : [Kotlin](https://kotlinlang.org/),
-  [Jetpack Compose et AndroidX](https://developer.android.com/jetpack) (Apache 2.0) ;
-  tests avec [JUnit 4](https://junit.org/junit4/) (EPL 1.0).
-- **Conversion des tuiles en VectorDrawable** (outils de développement, absents de
-  l'APK) : [svg2vectordrawable](https://github.com/Ashung/svg2vectordrawable) d'Ashung
-  Hung (MIT), [svgpath](https://github.com/fontello/svgpath) (MIT),
-  [svg-path-properties](https://github.com/rveciana/svg-path-properties) de Roger
+- **Tiles**: [riichi-mahjong-tiles](https://github.com/FluffyStuff/riichi-mahjong-tiles)
+  by FluffyStuff, dedicated to the public domain (CC0 1.0). Files copied unchanged into
+  `art/tiles/fluffystuff/`.
+- **Flowers, seasons and icon**: drawn for the project, in the FluffyStuff style, by
+  `art/tiles/fleurs-saisons/generer.js` and `art/icone/generer.js`.
+- **Libraries**: [Kotlin](https://kotlinlang.org/),
+  [Jetpack Compose and AndroidX](https://developer.android.com/jetpack) (Apache 2.0);
+  tests with [JUnit 4](https://junit.org/junit4/) (EPL 1.0).
+- **Tile conversion to VectorDrawable** (development tools, not shipped in the APK):
+  [svg2vectordrawable](https://github.com/Ashung/svg2vectordrawable) by Ashung Hung
+  (MIT), [svgpath](https://github.com/fontello/svgpath) (MIT),
+  [svg-path-properties](https://github.com/rveciana/svg-path-properties) by Roger
   Veciana i Rovira (ISC), [@xmldom/xmldom](https://github.com/xmldom/xmldom) (MIT).
-- **Inspiration** : *Mahjong HD*, dont le projet reprend la disposition et la
-  composition du jeu. Projet indépendant, sans lien avec les auteurs de *Mahjong HD*.
+- **Inspiration**: *Mahjong HD*, whose layout and tile set this project follows. An
+  independent project, not affiliated with the authors of *Mahjong HD*.
