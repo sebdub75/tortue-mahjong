@@ -241,7 +241,8 @@ fun GameScreen() {
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Label("${board.tiles.size} tuiles")
-                    Label("$pairs paires")
+                    // Singulier jusqu'à 1 inclus, à la française : « 0 paire », « 1 paire ».
+                    Label(if (pairs < 2) "$pairs paire" else "$pairs paires")
                     Label(game.mode.label.replaceFirstChar { it.uppercase() })
                 }
                 // Tortue vide : rien à perdre, la nouvelle donne se passe de confirmation.
