@@ -1,4 +1,4 @@
-# Mahjong solitaire Android
+# Tortue Mahjong — Mahjong solitaire Android
 
 Jeu de Mahjong solitaire à un joueur, façon *Mahjong HD* : pyramide « tortue » de 144
 tuiles sur 5 niveaux, on retire des paires de tuiles identiques et libres. Ce n'est pas

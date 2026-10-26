@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mahjong"
+rootProject.name = "Tortue Mahjong"
 include(":app")
 include(":core")

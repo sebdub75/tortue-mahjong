@@ -1,6 +1,27 @@
-# Mahjong solitaire (Android)
+# Tortue Mahjong — Mahjong solitaire (Android)
 
 Jeu de Mahjong solitaire pour Android, à un seul joueur, dans l'esprit de *Mahjong HD*.
+
+## Esprit du projet
+
+Tortue Mahjong veut rester **simple** : une seule disposition, la tortue, et peu
+d'options. Pour un jeu plus complet (nombreuses dispositions, thèmes, défis…),
+*Mahjong HD* est recommandé.
+
+Son originalité tient à son **solveur**, qui cherche une solution à chaque donne :
+
+- **Solution garantie, même au hasard** : en mode difficile, la tortue est tirée
+  vraiment au hasard, et non construite à rebours comme les donnes faciles, ce qui
+  donne des parties bien plus piégeuses. Le solveur ne garde que les tirages qu'il sait
+  vider. Si l'on se retrouve bloqué, c'est qu'on s'est piégé, pas que la donne était
+  perdue d'avance, et « Annuler » permet de retrouver le bon chemin.
+- **Mode expert, difficile mais soluble** : des donnes choisies à l'avance parmi des
+  milliers de tirages, toutes solubles, mais qu'un joueur jouant au hasard ne gagne
+  qu'une fois sur cent au plus. Elles sont environ neuf fois plus dures que celles du
+  mode difficile.
+
+Détails : [0013](docs/decisions/0013-solution-garantie.md) et
+[0014](docs/decisions/0014-mode-expert.md).
 
 ## Principe du jeu
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Textes en anglais, langue par défaut ; traduction française dans values-fr (voir 0017). -->
 <resources>
-    <string name="app_name" translatable="false">Mahjong</string>
+    <string name="app_name" translatable="false">Tortue Mahjong</string>
 
     <!-- Colonne de commandes -->
     <plurals name="tiles_left">
