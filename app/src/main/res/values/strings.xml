@@ -1,4 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Textes en anglais, langue par défaut ; traduction française dans values-fr (voir 0017). -->
 <resources>
-    <string name="app_name">Mahjong</string>
+    <string name="app_name" translatable="false">Mahjong</string>
+
+    <!-- Colonne de commandes -->
+    <plurals name="tiles_left">
+        <item quantity="one">%d tile</item>
+        <item quantity="other">%d tiles</item>
+    </plurals>
+    <plurals name="playable_pairs">
+        <item quantity="one">%d pair</item>
+        <item quantity="other">%d pairs</item>
+    </plurals>
+    <string name="new_deal">New deal</string>
+    <string name="undo">Undo</string>
+    <string name="hint">Hint</string>
+    <string name="options">Options</string>
+
+    <!-- Modes : nom court dans la colonne, description dans la proposition de nouvelle donne -->
+    <string name="mode_normal">easy</string>
+    <string name="mode_hard">hard</string>
+    <string name="mode_hard_unchecked">unguaranteed hard</string>
+    <string name="mode_expert">expert</string>
+
+    <!-- Messages et dialogues -->
+    <string name="won">You won!</string>
+    <string name="no_more_pairs">No more playable pairs</string>
+    <string name="confirm_new_deal">Abandon the current game\nand start a new deal?</string>
+    <string name="keep_playing">Keep playing</string>
+    <string name="offer_new_deal">You switched to %1$s mode.\nWould you like a new deal?</string>
+    <string name="dealing">Dealing…</string>
+
+    <!-- Options -->
+    <string name="plain_table">Plain background</string>
+    <string name="hard">Hard</string>
+    <string name="guaranteed">Guaranteed solution</string>
+    <string name="expert">Guaranteed difficulty</string>
+    <string name="close">Close</string>
+    <string name="build_info" translatable="false">Version %1$s · %2$s · %3$s</string>
 </resources>

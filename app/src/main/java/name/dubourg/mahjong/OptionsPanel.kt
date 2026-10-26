@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,27 +30,27 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun OptionsPanel(settings: Settings, onClose: () -> Unit) {
     ModalPanel(onDismiss = onClose) {
-        BasicText("Options", style = TextStyle(TextColor, 28.sp, FontWeight.Bold))
+        BasicText(stringResource(R.string.options), style = TextStyle(TextColor, 28.sp, FontWeight.Bold))
         Column {
-            CheckOption("Fond uni", settings.plainTable) { settings.plainTable = it }
-            CheckOption("Difficile", settings.hard) { settings.hard = it }
+            CheckOption(stringResource(R.string.plain_table), settings.plainTable) { settings.plainTable = it }
+            CheckOption(stringResource(R.string.hard), settings.hard) { settings.hard = it }
             // Sans objet en mode normal : la donne y est toujours soluble.
             if (settings.hard) {
-                CheckOption("Solution garantie", settings.guaranteed, Modifier.padding(start = 32.dp)) {
+                CheckOption(stringResource(R.string.guaranteed), settings.guaranteed, Modifier.padding(start = 32.dp)) {
                     settings.guaranteed = it
                 }
             }
             // Les donnes expert sont choisies parmi les solubles : sans objet sans garantie.
             if (settings.hard && settings.guaranteed) {
-                CheckOption("Difficulté garantie", settings.expert, Modifier.padding(start = 64.dp)) {
+                CheckOption(stringResource(R.string.expert), settings.expert, Modifier.padding(start = 64.dp)) {
                     settings.expert = it
                 }
             }
         }
-        ActionButton("Fermer", onClick = onClose)
+        ActionButton(stringResource(R.string.close), onClick = onClose)
         // Pour reconnaître l'exécutable installé : version, commit et heure du build.
         BasicText(
-            "Version ${BuildConfig.VERSION_NAME} · ${BuildConfig.BUILD_TYPE} · ${BuildConfig.BUILD_MARK}",
+            stringResource(R.string.build_info, BuildConfig.VERSION_NAME, BuildConfig.BUILD_TYPE, BuildConfig.BUILD_MARK),
             style = TextStyle(TextColor.copy(alpha = 0.6f), 12.sp),
         )
     }

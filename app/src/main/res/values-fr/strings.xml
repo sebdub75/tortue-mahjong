@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Traduction française ; les textes par défaut, en anglais, sont dans values (voir 0017). -->
+<resources>
+    <!-- Colonne de commandes. En français, « one » couvre 0 et 1 : « 0 paire », « 1 paire ». -->
+    <plurals name="tiles_left">
+        <item quantity="one">%d tuile</item>
+        <item quantity="many">%d tuiles</item>
+        <item quantity="other">%d tuiles</item>
+    </plurals>
+    <plurals name="playable_pairs">
+        <item quantity="one">%d paire</item>
+        <item quantity="many">%d paires</item>
+        <item quantity="other">%d paires</item>
+    </plurals>
+    <string name="new_deal">Nouvelle donne</string>
+    <string name="undo">Annuler</string>
+    <string name="hint">Aide</string>
+    <string name="options">Options</string>
+
+    <!-- Modes : nom court dans la colonne, description dans la proposition de nouvelle donne -->
+    <string name="mode_normal">facile</string>
+    <string name="mode_hard">difficile</string>
+    <string name="mode_hard_unchecked">difficile sans garantie</string>
+    <string name="mode_expert">expert</string>
+
+    <!-- Messages et dialogues -->
+    <string name="won">Gagné !</string>
+    <string name="no_more_pairs">Plus aucune paire jouable</string>
+    <string name="confirm_new_deal">Abandonner la partie en cours\net commencer une nouvelle donne ?</string>
+    <string name="keep_playing">Continuer la partie</string>
+    <string name="offer_new_deal">Vous êtes passé en mode %1$s.\nSouhaitez-vous une nouvelle donne ?</string>
+    <string name="dealing">Distribution…</string>
+
+    <!-- Options -->
+    <string name="plain_table">Fond uni</string>
+    <string name="hard">Difficile</string>
+    <string name="guaranteed">Solution garantie</string>
+    <string name="expert">Difficulté garantie</string>
+    <string name="close">Fermer</string>
+</resources>

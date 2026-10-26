@@ -40,6 +40,8 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -240,19 +242,20 @@ fun GameScreen() {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Label("${board.tiles.size} tuiles")
-                    // Singulier jusqu'à 1 inclus, à la française : « 0 paire », « 1 paire ».
-                    Label(if (pairs < 2) "$pairs paire" else "$pairs paires")
-                    Label(game.mode.label.replaceFirstChar { it.uppercase() })
+                    // Accord selon la langue : en français, singulier jusqu'à 1 inclus
+                    // (« 0 paire »), en anglais au-delà de 1 seulement (« 0 pairs »).
+                    Label(pluralStringResource(R.plurals.tiles_left, board.tiles.size, board.tiles.size))
+                    Label(pluralStringResource(R.plurals.playable_pairs, pairs, pairs))
+                    Label(stringResource(game.mode.label).replaceFirstChar { it.uppercase() })
                 }
                 // Tortue vide : rien à perdre, la nouvelle donne se passe de confirmation.
-                ActionButton("Nouvelle donne") {
+                ActionButton(stringResource(R.string.new_deal)) {
                     if (board.tiles.isEmpty()) deal() else confirmNewDeal = true
                 }
                 // Coups de la partie en bas, à l'écart de la nouvelle donne qui l'abandonne.
                 Spacer(Modifier.weight(1f))
-                IconButton(R.drawable.ic_undo, "Annuler", enabled = game.canUndo) { game.undo() }
-                IconButton(R.drawable.ic_hint, "Aide", game.hint?.let { "${it + 1}/$pairs" }, enabled = pairs > 0) {
+                IconButton(R.drawable.ic_undo, stringResource(R.string.undo), enabled = game.canUndo) { game.undo() }
+                IconButton(R.drawable.ic_hint, stringResource(R.string.hint), game.hint?.let { "${it + 1}/$pairs" }, enabled = pairs > 0) {
                     game.nextHint()
                 }
             }
@@ -260,15 +263,15 @@ fun GameScreen() {
                 BoardCanvas(game, Modifier.fillMaxSize().onSizeChanged { boardSize = it.toSize() })
                 // Coin haut droit, toujours vide : la tortue n'y a que ses tuiles d'extrémité,
                 // à mi-hauteur. Icône en dp, insensible à la police du système.
-                IconButton(R.drawable.ic_options, "Options", modifier = Modifier.align(Alignment.TopEnd).padding(12.dp)) {
+                IconButton(R.drawable.ic_options, stringResource(R.string.options), modifier = Modifier.align(Alignment.TopEnd).padding(12.dp)) {
                     showOptions = true
                 }
             }
         }
 
         val message = when {
-            board.tiles.isEmpty() -> "Gagné !"
-            pairs == 0 -> "Plus aucune paire jouable"
+            board.tiles.isEmpty() -> stringResource(R.string.won)
+            pairs == 0 -> stringResource(R.string.no_more_pairs)
             else -> null
         }
         if (message != null) {
@@ -283,8 +286,8 @@ fun GameScreen() {
                 BasicText(message, style = TextStyle(TextColor, 28.sp, FontWeight.Bold))
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     // Bloqué : revenir en arrière vaut souvent mieux que tout recommencer.
-                    if (board.tiles.isNotEmpty()) ActionButton("Annuler") { game.undo() }
-                    ActionButton("Nouvelle donne") { deal() }
+                    if (board.tiles.isNotEmpty()) ActionButton(stringResource(R.string.undo)) { game.undo() }
+                    ActionButton(stringResource(R.string.new_deal)) { deal() }
                 }
             }
         }
@@ -292,12 +295,12 @@ fun GameScreen() {
         if (confirmNewDeal) {
             ModalPanel(onDismiss = { confirmNewDeal = false }) {
                 BasicText(
-                    "Abandonner la partie en cours\net commencer une nouvelle donne ?",
+                    stringResource(R.string.confirm_new_deal),
                     style = TextStyle(TextColor, 22.sp, FontWeight.Bold, textAlign = TextAlign.Center),
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    ActionButton("Continuer la partie") { confirmNewDeal = false }
-                    ActionButton("Nouvelle donne") {
+                    ActionButton(stringResource(R.string.keep_playing)) { confirmNewDeal = false }
+                    ActionButton(stringResource(R.string.new_deal)) {
                         deal()
                         confirmNewDeal = false
                     }
@@ -313,12 +316,12 @@ fun GameScreen() {
         if (offerNewDeal) {
             ModalPanel(onDismiss = { offerNewDeal = false }) {
                 BasicText(
-                    "Vous êtes passé en mode ${settings.mode.description}.\nSouhaitez-vous une nouvelle donne ?",
+                    stringResource(R.string.offer_new_deal, stringResource(settings.mode.description)),
                     style = TextStyle(TextColor, 22.sp, FontWeight.Bold, textAlign = TextAlign.Center),
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    ActionButton("Continuer la partie") { offerNewDeal = false }
-                    ActionButton("Nouvelle donne") {
+                    ActionButton(stringResource(R.string.keep_playing)) { offerNewDeal = false }
+                    ActionButton(stringResource(R.string.new_deal)) {
                         deal()
                         offerNewDeal = false
                     }
@@ -328,7 +331,7 @@ fun GameScreen() {
 
         if (dealing) {
             ModalPanel(onDismiss = {}) {
-                BasicText("Distribution…", style = TextStyle(TextColor, 22.sp, FontWeight.Bold))
+                BasicText(stringResource(R.string.dealing),style = TextStyle(TextColor, 22.sp, FontWeight.Bold))
             }
         }
     }

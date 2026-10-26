@@ -52,4 +52,8 @@ un Mahjong à plusieurs joueurs.
   Annuler et Aide en icônes vectorielles (`IconButton`) (voir
   [0015](docs/decisions/0015-taille-de-police.md))
 
+- Langue : textes dans `res/values/strings.xml` (anglais, par défaut) et
+  `res/values-fr/strings.xml` (français), jamais en dur dans le code ; compteurs en
+  `<plurals>` (voir [0017](docs/decisions/0017-anglais-par-defaut.md))
+
 Documentation rédigée en français.
