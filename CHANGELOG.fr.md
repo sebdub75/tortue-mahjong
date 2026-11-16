@@ -2,7 +2,7 @@
 
 [English](CHANGELOG.md) | **Français**
 
-## 0.2 — non publiée
+## 0.2 — 16 novembre 2026
 
 *versionCode 2*
 
