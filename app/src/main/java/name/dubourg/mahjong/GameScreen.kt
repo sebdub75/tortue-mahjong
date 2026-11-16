@@ -88,6 +88,9 @@ private class GameState(game: Game, val mode: Mode) {
     val canUndo: Boolean get() = game.canUndo
     val hintPair: Pair<Position, Position>? get() = hint?.let { hintOrder.getOrNull(it) }
 
+    /** « rang/total » de l'aide : le total compte toutes les combinaisons parcourues. */
+    val hintProgress: String? get() = hint?.let { "${it + 1}/${hintOrder.size}" }
+
     /**
      * Montrer la paire jouable suivante, en revenant à la première après la dernière. Au
      * premier appui, les paires de la tuile sélectionnée passent en tête.
@@ -221,7 +224,7 @@ fun GameScreen() {
             .bottom(Layouts.TURTLE.positions)).toDp().coerceAtLeast(0.dp)
     }
     val board = game.board
-    val pairs = board.playablePairs().size
+    val pairs = board.playablePairCount()
 
     Box(
         Modifier
@@ -255,7 +258,7 @@ fun GameScreen() {
                 // Coups de la partie en bas, à l'écart de la nouvelle donne qui l'abandonne.
                 Spacer(Modifier.weight(1f))
                 IconButton(R.drawable.ic_undo, stringResource(R.string.undo), enabled = game.canUndo) { game.undo() }
-                IconButton(R.drawable.ic_hint, stringResource(R.string.hint), game.hint?.let { "${it + 1}/$pairs" }, enabled = pairs > 0) {
+                IconButton(R.drawable.ic_hint, stringResource(R.string.hint), game.hintProgress, enabled = pairs > 0) {
                     game.nextHint()
                 }
             }

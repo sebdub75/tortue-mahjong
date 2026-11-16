@@ -137,6 +137,56 @@ class BoardTest {
     }
 
     @Test
+    fun `trois tuiles libres identiques font une seule paire au compteur`() {
+        val p = (0 until 3).map { Position(it * 4, 0, 0) }
+        val start = Board(p.associateWith { man1 })
+        assertEquals(3, start.playablePairs().size)
+        assertEquals(1, start.playablePairCount())
+    }
+
+    @Test
+    fun `quatre tuiles libres identiques font deux paires au compteur`() {
+        val p = (0 until 4).map { Position(it * 4, 0, 0) }
+        val start = Board(p.associateWith { man1 })
+        assertEquals(6, start.playablePairs().size)
+        assertEquals(2, start.playablePairCount())
+    }
+
+    @Test
+    fun `le compteur regroupe les fleurs entre elles et ignore les tuiles bloquées`() {
+        // Trois fleurs différentes : une paire. Deux 1 caractère, dont un coincé entre
+        // deux voisines : aucune paire.
+        val faces = listOf(Face(Suit.FLOWER, 1), Face(Suit.FLOWER, 2), Face(Suit.FLOWER, 3), man1)
+        val isolated = faces.indices.map { Position(it * 4, 0, 0) }
+        val blocked = listOf(Position(20, 0, 0), Position(22, 0, 0), Position(24, 0, 0))
+        val start = Board(
+            isolated.zip(faces).toMap() +
+                mapOf(blocked[0] to Face(Suit.DOTS, 1), blocked[1] to man1, blocked[2] to Face(Suit.DOTS, 2)),
+        )
+        assertEquals(1, start.playablePairCount())
+    }
+
+    @Test
+    fun `de 2 à 8 fleurs libres, le compteur donne n sur 2 paires`() = checkFreeGroup(Suit.FLOWER)
+
+    @Test
+    fun `de 2 à 8 saisons libres, le compteur donne n sur 2 paires`() = checkFreeGroup(Suit.SEASON)
+
+    /**
+     * n tuiles libres de la famille, de 2 à 8 (toute la famille) : n / 2 paires au
+     * compteur, mais n (n - 1) / 2 combinaisons, puisqu'elles s'apparient toutes entre
+     * elles. Les valeurs tournent de 1 à 4, chacune en 2 exemplaires au plus, comme dans
+     * le jeu.
+     */
+    private fun checkFreeGroup(suit: Suit) {
+        for (n in 2..8) {
+            val start = Board((0 until n).associate { Position(it * 4, 0, 0) to Face(suit, it % 4 + 1) })
+            assertEquals("$n tuiles $suit : paires", n / 2, start.playablePairCount())
+            assertEquals("$n tuiles $suit : combinaisons", n * (n - 1) / 2, start.playablePairs().size)
+        }
+    }
+
+    @Test
     fun `une tuile sans paire jouable laisse l'ordre des motifs`() {
         val a = Position(0, 0, 0)
         val b = Position(4, 0, 0)

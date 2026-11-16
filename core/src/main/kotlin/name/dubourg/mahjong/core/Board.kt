@@ -45,6 +45,16 @@ class Board(val tiles: Map<Position, Face>) {
                 { tiles.getValue(it.first).suit }, { tiles.getValue(it.first).groupRank }),
         )
     }
+
+    /**
+     * Nombre de paires jouables qu'on peut retirer l'une après l'autre sans se gêner :
+     * n tuiles libres d'un même motif en donnent n / 2, là où [playablePairs] liste
+     * toutes les combinaisons (3 tuiles identiques : 3 combinaisons, mais 1 seule paire).
+     */
+    fun playablePairCount(): Int =
+        tiles.filterKeys { isFree(it) }.values
+            .groupingBy { it.suit to it.groupRank }.eachCount()
+            .values.sumOf { it / 2 }
 }
 
 /** Rang de la tuile parmi les groupes de sa famille : fleurs et saisons n'en forment qu'un. */
